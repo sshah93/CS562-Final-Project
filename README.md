@@ -1,4 +1,4 @@
 CS562
 =====
 
-Database Management Systems 2 Porject Repo
+Database Management Systems 2 Project Repo
