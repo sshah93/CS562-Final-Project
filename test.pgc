@@ -1,0 +1,73 @@
+#include	<stdio.h>
+
+//----------------------------------------------------------------------
+// HOST VARIABLES definitions
+//----------------------------------------------------------------------
+EXEC SQL BEGIN DECLARE SECTION;
+struct {
+	char	*column_name;
+	char	*data_type;
+	int		max_length;
+}type_rec;
+EXEC SQL END DECLARE SECTION;
+EXEC SQL INCLUDE sqlca;
+
+//----------------------------------------------------------------------
+// FUNCTION PROTOTYPE declaration
+//----------------------------------------------------------------------
+void	output_record(); //output records to the console
+
+//----------------------------------------------------------------------
+int main(int argc, char* argv[])
+//----------------------------------------------------------------------
+{
+   //----------------------------------------------------------------------
+   // DATABASE CONNECTION
+   //----------------------------------------------------------------------
+   EXEC SQL CONNECT TO jrodrig9 USER jrodrig9 IDENTIFIED BY Johny10353976;
+   EXEC SQL WHENEVER sqlerror sqlprint;
+
+   //----------------------------------------------------------------------
+   // PRINT TITLE
+   //----------------------------------------------------------------------   
+   printf(" struct{       \n");
+   
+   //----------------------------------------------------------------------
+   // READ RECORDS
+   //----------------------------------------------------------------------
+   EXEC SQL DECLARE mycursor CURSOR FOR SELECT column_name, data_type, character_maximum_length 
+										FROM information_schema.columns
+										WHERE table_name = 'sales';
+   EXEC SQL SET TRANSACTION read only;
+   // Open cursor
+   EXEC SQL OPEN mycursor;
+   // Fetch Data
+   EXEC SQL FETCH FROM mycursor INTO :type_rec; //fetch the first row
+   while (sqlca.sqlcode == 0) {
+      output_record();
+      EXEC SQL FETCH FROM mycursor INTO :type_rec; //fetch the rest rows
+   }
+   // Close cursor
+   EXEC SQL CLOSE mycursor;
+   printf("} mf_structure[500] \n");
+
+   return 0;
+}
+
+//----------------------------------------------------------------------
+void	output_record()
+//----------------------------------------------------------------------
+{
+	if (type_rec.max_length <= 0)
+	{
+		printf("%s ",type_rec.data_type);
+		printf("  %s; \n",type_rec.column_name);   // Column
+	}
+	
+	else
+	{
+		printf("char ");
+		printf("  %s",type_rec.column_name);   // Column
+		printf("[%i]; \n",type_rec.max_length+1);
+	}
+}
