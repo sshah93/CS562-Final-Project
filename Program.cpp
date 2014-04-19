@@ -13,10 +13,12 @@ int main()
 	string select_line;
 	int num_of_grouping_vars;
 	string groupingAttr;
-	string fvect;
+	//string fvect;
 	string such_that;
 
 	vector<string> select_attr;
+	vector<string> grouping_attr;
+	vector<string> fvect;
 	
 	string line;
 	char* strtoken;
@@ -44,20 +46,20 @@ int main()
 			// select attribute
 			if(count == 1)
 			{
-				strtoken = strtok((char *)line.c_str(), ",");
+				strtoken = strtok((char *)line.c_str(), ", ");
 
 				while(strtoken != NULL)
 				{
-					cout << "strtoken: " << strtoken << endl;
+					cout << "select_attr: " << strtoken << endl;
 					//strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
 					select_attr.push_back(strtoken);
 					strtoken = strtok(NULL, ", ");
 				}
 
-				for(int i=0; i<select_attr.size(); i++)
+				/*for(int i=0; i<select_attr.size(); i++)
 				{
 					cout << select_attr[i] << endl;
-				}
+				}*/
 			}
 
 			// number of grouping variables
@@ -70,13 +72,29 @@ int main()
 			// grouping attributes
 			else if(count == 3)
 			{
+				strtoken = strtok((char *)line.c_str(), ", ");
 
+				while(strtoken != NULL)
+				{
+					cout << "grouping_attr: " << strtoken << endl;
+					//strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
+					grouping_attr.push_back(strtoken);
+					strtoken = strtok(NULL, ", ");
+				}
 			}
 
 			// aggregate functions
 			else if(count == 4)
 			{
+				strtoken = strtok((char *)line.c_str(), ", ");
 
+				while(strtoken != NULL)
+				{
+					cout << "fvect: " << strtoken << endl;
+					//strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
+					fvect.push_back(strtoken);
+					strtoken = strtok(NULL, ", ");
+				}
 			}
 
 			else
