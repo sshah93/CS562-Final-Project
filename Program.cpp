@@ -36,8 +36,6 @@ int main()
 		while(!fin.eof())
 		{
 			getline(fin, line);
-			
-			// need to do the logic here after shower now :)
 		}
 	}
 }
