@@ -1,1 +1,2 @@
-cust, jp, suketu
+cust, jp, suketu, avg_quant_1
+3

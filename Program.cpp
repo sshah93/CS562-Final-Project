@@ -1,25 +1,27 @@
 #include <iostream>
 #include <vector>
-#include <string>
-#include "libpq-fe.h"
+#include <cstring>
+#include <stdlib.h>
+#include <fstream>
+//#include <postgresql/libpq-fe.h>
 
 using namespace std;
-
-static void exit_nicely(PGconn *conn)
-{
-	PQfinish(conn);
-	exit(1);
-}
 
 int main()
 {
 	string dbname = "sales";
 	string select_line;
-	string num_of_grouping_vars;
+	int num_of_grouping_vars;
 	string groupingAttr;
 	string fvect;
 	string such_that;
-	string having;
+
+	vector<string> select_attr;
+	
+	string line;
+	char* strtoken;
+
+	int count = 0;
 
 	/* input file for arguments */
 	ifstream fin;	
@@ -35,7 +37,52 @@ int main()
 	{
 		while(!fin.eof())
 		{
+			count++;
+
 			getline(fin, line);
+
+			// select attribute
+			if(count == 1)
+			{
+				strtoken = strtok((char *)line.c_str(), ",");
+
+				while(strtoken != NULL)
+				{
+					cout << "strtoken: " << strtoken << endl;
+					//strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
+					select_attr.push_back(strtoken);
+					strtoken = strtok(NULL, ", ");
+				}
+
+				for(int i=0; i<select_attr.size(); i++)
+				{
+					cout << select_attr[i] << endl;
+				}
+			}
+
+			// number of grouping variables
+			else if(count == 2)
+			{
+				num_of_grouping_vars = atoi((char *)line.c_str());
+				cout << num_of_grouping_vars << endl;
+			}
+
+			// grouping attributes
+			else if(count == 3)
+			{
+
+			}
+
+			// aggregate functions
+			else if(count == 4)
+			{
+
+			}
+
+			else
+			{
+
+			}
 		}
 	}
 }
