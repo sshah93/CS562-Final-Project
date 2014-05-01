@@ -8,6 +8,20 @@
 
 using namespace std;
 
+vector<string>& split(const string& str, char delimeter)
+{
+	vector<string> contents
+	string mystr;
+	stringstream splitString(str);
+	
+	while(getline(splitString, mystr, delimeter))
+	{
+		contents.push_back(mystr);
+	}
+	
+	return contents;
+}
+
 int main()
 {
 	PGconn          *conn;
