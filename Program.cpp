@@ -102,7 +102,7 @@ int main()
  				while(strtoken != NULL)
  				{
  					cout << "grouping_attr: " << strtoken << endl;
- 					//strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
+ 					// strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
  					grouping_attr.push_back(strtoken);
  					strtoken = strtok(NULL, ", ");
  				}
@@ -116,7 +116,7 @@ int main()
  				while(strtoken != NULL)
  				{
  					cout << "fvect: " << strtoken << endl;
- 					//strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
+ 					// strtoken = strtoken.erase (std::remove (strtoken.begin(), strtoken.end(), ' '), strtoken.end());
  					fvect.push_back(strtoken);
  					strtoken = strtok(NULL, ", ");
  				}
