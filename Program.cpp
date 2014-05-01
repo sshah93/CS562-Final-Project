@@ -1,12 +1,45 @@
 // to run use: g++ -lpq program.cpp -o program
 #include <iostream>
 #include <vector>
+#include <string>
 #include <cstring>
 #include <stdlib.h>
+#include <list>
+#include <sstream>
 #include <fstream>
 #include <postgresql/libpq-fe.h>
 
 using namespace std;
+
+class AggregateFn
+{
+public:
+	string column_name;
+	string type;
+	string aggregate_function;
+	int num;
+	int max_length;
+
+	// constructor
+	AggregateFn(string column_name, string aggregate_function, int num) : 
+		name(column_name),  
+		function(aggregate_function), 
+		num(num),
+		max_length(-1)
+	{
+
+	}
+
+	void setType(string mType)
+	{
+		type = mType;
+	}
+
+	void setMaxLength(int len)
+	{
+		max_length = len;
+	}
+};
 
 vector<string>& split(const string& str, char delimeter)
 {
@@ -137,6 +170,27 @@ int main()
 		}
 	}
 	
+	string argument;
+	string search = "_";
+
+	// sum_quant_1
+	string agrFn;
+	string colName;
+	int numGrVar;
+
+	// for each object in the fvect we are making object add will add it to the list
+	for(unsigned int i = 0; i < fvect.size(); i++)
+	{
+		argument = fvect[i];
+
+		if(argument.find(search) != -1)
+		{
+			vector<string> contents = split(argument, "_");
+			agrFn = contents[0];
+			colName = contents[1];
+			numGrVar = atoi(contents[2]);
+		}
+	}
 	
 	conn = PQconnectdb("dbname=jrodrig9 host=postgres.cs.stevens.edu user=jrodrig9 password=Johny10353976");
 
