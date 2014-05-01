@@ -42,6 +42,7 @@ int main()
 	vector<string> select_attr;
 	vector<string> grouping_attr;
 	vector<string> fvect;
+	vector<string> phi;
 	
 	string line;
 	char* strtoken;
@@ -80,6 +81,7 @@ int main()
 				}
 
 				where = "AND column_name = '" + select_attr[0] + "' ";
+				
 				for(int i=1; i<select_attr.size(); i++)
 				{
 					//cout << select_attr[i] << endl;
@@ -122,10 +124,16 @@ int main()
  				}
 			}
 
+			// phi operator
 			else
-			{
-
+			{	
+				phi.push_back(line);
 			}
+		}
+		
+		for(unsigned int i = 0; i < phi.size(); i++)
+		{
+			cout << "phi: " << i << " " << phi[i] << endl;
 		}
 	}
 	
@@ -174,5 +182,6 @@ int main()
 
         PQfinish(conn);
 
-         return 0; 
+	fin.close();
+	return 0; 
 }
