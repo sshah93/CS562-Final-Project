@@ -178,7 +178,7 @@ void makeObjects()
 			// cout << "function_name" << endl;
 			fn_name = str.substr(0, str.find_first_of('_'));
 			// cout << "column_name" << endl;
-			col_name = str.substr(str.find_first_of('_')+1, str.find_last_of('_')-1);
+			col_name = str.substr(str.find_first_of('_')+1, str.find_last_of('_')-4);
 			// cout << "number" << endl;
 			string num = str.substr(str.find_last_of('_')+1);
 			number = atoi(num.c_str());
