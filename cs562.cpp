@@ -199,11 +199,11 @@ void makeObjects()
 int main()
 {
 	// postgres local vars
-	/* PGconn          *conn;
+	PGconn          *conn;
 	PGresult        *res;
 	int             rec_count;
 	int             row;
-	int             col; */
+	int             col;
 
 	string dbname = "sales";
 
@@ -237,7 +237,7 @@ int main()
 		cout << mylist[i]->num << endl;
 	} 
 
-	/* postgres code
+	//postgres code
 	conn = PQconnectdb("dbname=jrodrig9 host=postgres.cs.stevens.edu user=jrodrig9 password=Johny10353976");
 
     if (PQstatus(conn) == CONNECTION_BAD) 
@@ -283,7 +283,7 @@ int main()
 	cout << "EXEC SQL INCLUDE sqlca;" << endl;
 	PQclear(res);
 
-    PQfinish(conn); */
+    PQfinish(conn);
 
 	return 0; 
 }
