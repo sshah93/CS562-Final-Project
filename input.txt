@@ -1,4 +1,4 @@
-cust, jp, suketu, avg_quant_1
+cust,jp,suketu,avg_quant_1
 3
 cust
-1_sum_quant, avg_quant_1, 2_sum_quant, 3_sum_quant, suketu
+1_sum_quant,avg_quant_1,jp,2_sum_quant,3_sum_quant,suketu,nnjn
