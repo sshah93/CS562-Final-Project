@@ -173,12 +173,12 @@ void makeObjects()
 	{
 		str = mf_define[i];
 
-		if(str.find('_'))
+		if(str.find('_') != std::string::npos)
 		{
 			// cout << "function_name" << endl;
-			fn_name = str.substr(0, str.find_first_of('_')-1);
+			fn_name = str.substr(0, str.find_first_of('_'));
 			// cout << "column_name" << endl;
-			col_name = str.substr(str.find_first_of('_')+1, str.find_last_of('_'));
+			col_name = str.substr(str.find_first_of('_')+1, str.find_last_of('_')-1);
 			// cout << "number" << endl;
 			string num = str.substr(str.find_last_of('_')+1);
 			number = atoi(num.c_str());
@@ -199,11 +199,11 @@ void makeObjects()
 int main()
 {
 	// postgres local vars
-	PGconn          *conn;
+	/* PGconn          *conn;
 	PGresult        *res;
 	int             rec_count;
 	int             row;
-	int             col;
+	int             col; */
 
 	string dbname = "sales";
 
@@ -237,7 +237,7 @@ int main()
 		cout << mylist[i]->num << endl;
 	} 
 
-	// postgres code
+	/* postgres code
 	conn = PQconnectdb("dbname=jrodrig9 host=postgres.cs.stevens.edu user=jrodrig9 password=Johny10353976");
 
     if (PQstatus(conn) == CONNECTION_BAD) 
@@ -283,7 +283,7 @@ int main()
 	cout << "EXEC SQL INCLUDE sqlca;" << endl;
 	PQclear(res);
 
-    PQfinish(conn);
+    PQfinish(conn); */
 
 	return 0; 
 }
