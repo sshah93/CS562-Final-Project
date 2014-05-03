@@ -7,9 +7,15 @@
 #include <list>
 #include <sstream>
 #include <fstream>
+#include <cstddef>
 #include <postgresql/libpq-fe.h>
 
 using namespace std;
+
+void fileParser();
+void split(string& str, char delim, int num);
+void makeNewVector();
+void makeObjects();
 
 /* Parsing the input file and filling all this vectors up */
 vector<string> select_attr;
@@ -39,6 +45,11 @@ public:
 
 	}
 
+	virtual ~Agr()
+	{
+
+	}
+
 	void setDataType(string mType)
 	{
 		dataType = mType;
@@ -50,9 +61,11 @@ public:
 	}
 };
 
-vector<string> split(string& str, char delim, int num)
+/* list that contains all the objects that will be inserted in our mf struct */
+list<Agr> mylist;
+
+void split(string& str, char delim, int num)
 {
-	vector<string> contents;
 	string mystr;
 	stringstream splitString(str);
 
@@ -73,8 +86,6 @@ vector<string> split(string& str, char delim, int num)
 			fvect.push_back(mystr);
 		}
 	}
-
-	return contents;
 }
 
 void fileParser()
@@ -150,8 +161,40 @@ void makeNewVector()
 	}
 }
 
+void makeObjects()
+{
+	char delim = '_';
+	string str;
+	string fn_name;
+	string col_name;
+	int number;
+
+	for(int i = 0; i < mf_define.size(); i++)
+	{
+		str = mf_define[i];
+
+		if(str.find('_'))
+		{
+			fn_name = str.substr(0, str.find_first_of('_')-1);
+			col_name = str.substr(str.find_first_of('_'), str.find_last_of('_')-1);
+			number = atoi(str.substr(str.find_last_of('_')+1, str.end()));
+		}
+
+		else
+		{
+			fn_name = none;
+			number = 0;
+			col_name = mf_define[i]; 
+		}
+
+		Agr newAgr = new Agr(col_name, fn_name, number);
+		mylist.push_back(newAgr); 
+	}
+}
+
 int main()
 {
+	// postgres local vars
 	PGconn          *conn;
 	PGresult        *res;
 	int             rec_count;
@@ -166,13 +209,17 @@ int main()
 	// makes the combination of select clause and fvector
 	makeNewVector();
 
-	cout << endl << "makeNewVector test" << endl;
+	// make objects for each element in the mf_define vector
+	makeObjects();
 
-	for(unsigned int i = 0; i < mf_define.size(); i++)
+	cout << endl << "List" << endl;
+	
+	for(unsigned int i = 0; i < mylist.size(); i++)
 	{
-		cout << mf_define[i] << endl;
-	}
+		cout << mylist[i] << endl;
+	} 
 
+	// postgres code
 	conn = PQconnectdb("dbname=jrodrig9 host=postgres.cs.stevens.edu user=jrodrig9 password=Johny10353976");
 
     if (PQstatus(conn) == CONNECTION_BAD) 
