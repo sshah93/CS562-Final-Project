@@ -178,9 +178,9 @@ void makeObjects()
 			// cout << "function_name" << endl;
 			fn_name = str.substr(0, str.find_first_of('_')-1);
 			// cout << "column_name" << endl;
-			col_name = str.substr(str.find_first_of('_')+1, str.find_last_of('_')-1);
+			col_name = str.substr(str.find_first_of('_')+1, str.find_last_of('_'));
 			// cout << "number" << endl;
-			string num = str.substr(str.find_last_of('_')+1, str.length());
+			string num = str.substr(str.find_last_of('_')+1);
 			number = atoi(num.c_str());
 		}
 
@@ -221,6 +221,20 @@ int main()
 	for(unsigned int i = 0; i < mylist.size(); i++)
 	{
 		cout << mylist[i]->colName << endl;
+	} 
+
+	cout << endl << "function name" << endl;
+	
+	for(unsigned int i = 0; i < mylist.size(); i++)
+	{
+		cout << mylist[i]->fnName << endl;
+	} 
+
+	cout << endl << "number" << endl;
+	
+	for(unsigned int i = 0; i < mylist.size(); i++)
+	{
+		cout << mylist[i]->num << endl;
 	} 
 
 	// postgres code
