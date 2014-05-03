@@ -9,6 +9,8 @@
 #include <fstream>
 #include <postgresql/libpq-fe.h>
 
+using namespace std;
+
 /* Parsing the input file and filling all this vectors up */
 vector<string> select_attr;
 int numGroupingVars;
@@ -48,7 +50,7 @@ public:
 	}
 };
 
-vector<string>& split(string& str, char delim)
+vector<string> split(string& str, char delim)
 {
 	vector<string> contents;
 	string mystr;
@@ -157,6 +159,14 @@ void makeNewVector()
 
 int main()
 {
+	PGconn          *conn;
+	PGresult        *res;
+	int             rec_count;
+	int             row;
+	int             col;
+
+	string dbname = "sales";
+
 	// call the function to get all the vectors ready for us
 	fileParser();
 
