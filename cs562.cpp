@@ -62,7 +62,7 @@ public:
 };
 
 /* list that contains all the objects that will be inserted in our mf struct */
-list<Agr*> mylist;
+vector<Agr*> mylist;
 
 void split(string& str, char delim, int num)
 {
@@ -177,8 +177,8 @@ void makeObjects()
 		{
 			fn_name = str.substr(0, str.find_first_of('_')-1);
 			col_name = str.substr(str.find_first_of('_'), str.find_last_of('_')-1);
-			string num = str.substr(str.find_last_of('_')+1, str.end());
-			number = atoi(num);
+			string num = str.substr(str.find_last_of('_')+1, str.length());
+			number = atoi(num.c_str());
 		}
 
 		else
