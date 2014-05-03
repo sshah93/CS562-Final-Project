@@ -152,6 +152,12 @@ void makeNewVector()
 
 int main()
 {
+	PGconn          *conn;
+	PGresult        *res;
+	int             rec_count;
+	int             row;
+	int             col;
+
 	string dbname = "sales";
 
 	// call the function to get all the vectors ready for us
@@ -167,5 +173,52 @@ int main()
 		cout << mf_define[i] << endl;
 	}
 
-	return 0;
+	conn = PQconnectdb("dbname=jrodrig9 host=postgres.cs.stevens.edu user=jrodrig9 password=Johny10353976");
+
+    if (PQstatus(conn) == CONNECTION_BAD) 
+    {
+            puts("We were unable to connect to the database");
+            return 0;
+    }
+	
+	string query = "SELECT column_name, data_type, character_maximum_length FROM information_schema.columns WHERE table_name = 'sales'";
+   	res = PQexec(conn, query.c_str());
+
+	if (PQresultStatus(res) != PGRES_TUPLES_OK) 
+	{
+           puts("We did not get any data!");
+           return 0;
+	}
+
+	rec_count = PQntuples(res);
+
+	cout << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
+	cout << "struct{" << endl;
+
+	for (row=0; row<rec_count; row++) {
+			
+		if (atoi(PQgetvalue(res, row, 2)) <= 0)
+		{
+			if (string(PQgetvalue(res, row, 1)) == "integer")
+				cout << "int\t";
+			else 
+				cout << PQgetvalue(res, row, 1) << "\t";
+			cout << PQgetvalue(res, row, 0) << endl;   // Column
+		}
+			
+		else
+		{
+			cout << "char\t";
+			cout << PQgetvalue(res, row, 0);   // Column
+			cout << "[" << (atoi(PQgetvalue(res, row, 2))+1)<< "];" << endl;
+		}
+   	}
+	cout << "} mf_structure[500];" << endl;
+	cout << "EXEC SQL END DECLARE SECTION;" << endl;
+	cout << "EXEC SQL INCLUDE sqlca;" << endl;
+	PQclear(res);
+
+    PQfinish(conn);
+
+	return 0; 
 }
