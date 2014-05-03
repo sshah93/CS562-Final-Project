@@ -50,14 +50,29 @@ public:
 	}
 };
 
-vector<string> split(string& str, char delim)
+vector<string> split(string& str, char delim, int num)
 {
 	vector<string> contents;
 	string mystr;
 	stringstream splitString(str);
 
 	while(getline(splitString, mystr, delim))
-		contents.push_back(mystr);
+	{
+		if(num == 1)
+		{
+			select_attr.push_back(mystr);
+		}
+
+		else if(num == 3)
+		{
+			grouping_attr.push_back(mystr);
+		}
+
+		else if(num == 4)
+		{
+			fvect.push_back(mystr);
+		}
+	}
 
 	return contents;
 }
@@ -87,42 +102,14 @@ void fileParser()
 
 			getline(fin, line);
 
-			if(counter == 1)
+			if(counter == 1 || counter == 3 || counter == 4)
 			{
-				strtoken = strtok((char*) line.c_str(), ", "); 
-
-				while(strtoken != NULL)
-				{
-					select_attr.push_back(strtoken);
-					strtoken = strtok(NULL, ", ");
-				}
+				split(line, ',', counter);
 			}
 
 			else if(counter == 2)
 			{
 				numGroupingVars = atoi((char*)line.c_str());
-			}
-
-			else if(counter == 3)
-			{
-				strtoken = strtok((char*) line.c_str(), ", "); 
-
-				while(strtoken != NULL)
-				{
-					grouping_attr.push_back(strtoken);
-					strtoken = strtok(NULL, ", ");
-				}
-			}
-
-			else if(counter == 4)
-			{
-				strtoken = strtok((char*) line.c_str(), ", "); 
-
-				while(strtoken != NULL)
-				{
-					fvect.push_back(strtoken);
-					strtoken = strtok(NULL, ", ");
-				}
 			}
 
 			else
@@ -131,26 +118,32 @@ void fileParser()
 			}
 		}
 	}
+
+	fin.close();
 }
 
 void makeNewVector()
 {
 	bool add;
 
+	mf_define = fvect;
+
 	for(unsigned int i = 0; i < select_attr.size(); i++)
 	{
-		add = false;
+		add = true;
 
 		for(unsigned int j = 0; j < fvect.size(); j++)
 		{
-			if(fvect[j].compare(select_attr[i]) == 0)
+			cout << "Comparing " << fvect[j] << " with " << select_attr[i] << endl;
+
+			if(fvect[j] == select_attr[i])
 			{
-				add = true;
+				add = false;
 				break;
 			}
 		}
 
-		if(!add)
+		if(add)
 		{
 			mf_define.push_back(select_attr[i]);
 		}
