@@ -62,7 +62,7 @@ public:
 };
 
 /* list that contains all the objects that will be inserted in our mf struct */
-list<Agr> mylist;
+list<Agr*> mylist;
 
 void split(string& str, char delim, int num)
 {
@@ -177,17 +177,18 @@ void makeObjects()
 		{
 			fn_name = str.substr(0, str.find_first_of('_')-1);
 			col_name = str.substr(str.find_first_of('_'), str.find_last_of('_')-1);
-			number = atoi(str.substr(str.find_last_of('_')+1, str.end()));
+			string num = str.substr(str.find_last_of('_')+1, str.end());
+			number = atoi(num);
 		}
 
 		else
 		{
-			fn_name = none;
+			fn_name = "none";
 			number = 0;
 			col_name = mf_define[i]; 
 		}
 
-		Agr newAgr = new Agr(col_name, fn_name, number);
+		Agr* newAgr = new Agr(col_name, fn_name, number);
 		mylist.push_back(newAgr); 
 	}
 }
@@ -216,7 +217,7 @@ int main()
 	
 	for(unsigned int i = 0; i < mylist.size(); i++)
 	{
-		cout << mylist[i] << endl;
+		cout << mylist[i]->name << endl;
 	} 
 
 	// postgres code
