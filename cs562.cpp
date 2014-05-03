@@ -217,7 +217,7 @@ int main()
 	
 	for(unsigned int i = 0; i < mylist.size(); i++)
 	{
-		cout << mylist[i]->name << endl;
+		cout << mylist[i]->colName << endl;
 	} 
 
 	// postgres code
