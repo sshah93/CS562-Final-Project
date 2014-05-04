@@ -59,6 +59,24 @@ public:
 	{
 		maxlength = len;
 	}
+	
+	void printMFStruct()
+	{
+		if (fnName == "cnt")
+			cout << "int\t";
+		else
+			cout << dataType << "\t";
+		
+		if (fnName == "none")
+			cout << colName;
+		else 
+			cout << fnName << num;
+		
+		if (maxlength <= 0)
+			cout << ";" << endl;
+		else
+			cout << "[" << maxlength << "];" << endl;
+	}
 };
 
 /* list that contains all the objects that will be inserted in our mf struct */
@@ -202,8 +220,6 @@ int main()
 	PGconn          *conn;
 	PGresult        *res;
 	int             rec_count;
-	int             row;
-	int             col;
 
 	string dbname = "sales";
 
@@ -257,27 +273,29 @@ int main()
 
 	rec_count = PQntuples(res);
 
+
+	for (unsigned int row=0; row<rec_count; row++) 
+	{
+		for (unsigned int i = 0; i < mylist.size(); i++)
+		{
+			if (string(PQgetvalue(res, row, 0)) == mylist[i]->colName)
+			{
+				if (string(PQgetvalue(res, row, 1)) == "integer")
+					mylist[i]->setDataType("int");
+				else if (string(PQgetvalue(res, row, 1)) == "character varying")
+					mylist[i]->setDataType("char");
+				else 
+					mylist[i]->setDataType(string(PQgetvalue(res, row, 1)));
+				
+				if (atoi(PQgetvalue(res, row, 2)) > 0)
+					mylist[i]->setMaxLength(atoi(PQgetvalue(res, row, 2))+1);
+			}
+		}	
+   	}
 	cout << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
 	cout << "struct{" << endl;
-
-	for (row=0; row<rec_count; row++) {
-			
-		if (atoi(PQgetvalue(res, row, 2)) <= 0)
-		{
-			if (string(PQgetvalue(res, row, 1)) == "integer")
-				cout << "int\t";
-			else 
-				cout << PQgetvalue(res, row, 1) << "\t";
-			cout << PQgetvalue(res, row, 0) << endl;   // Column
-		}
-			
-		else
-		{
-			cout << "char\t";
-			cout << PQgetvalue(res, row, 0);   // Column
-			cout << "[" << (atoi(PQgetvalue(res, row, 2))+1)<< "];" << endl;
-		}
-   	}
+	for (unsigned int i=0; i < mylist.size(); i++)
+		mylist[i]->printMFStruct();
 	cout << "} mf_structure[500];" << endl;
 	cout << "EXEC SQL END DECLARE SECTION;" << endl;
 	cout << "EXEC SQL INCLUDE sqlca;" << endl;

@@ -1,4 +1,3 @@
-cust,jp,suketu,avg_quant_1
+prod,month,cnt_all_1,cnt_all_2
 3
 cust
-sum_quant_1,avg_quant_1,jp,sum_quant_2,sum_quant_3,suketu,nnjn
