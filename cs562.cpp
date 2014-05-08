@@ -16,6 +16,7 @@ void fileParser();
 void split(string& str, char delim, int num);
 void makeNewVector();
 void makeObjects();
+void printInput();
 
 /* Parsing the input file and filling all this vectors up */
 vector<string> select_attr;
@@ -23,6 +24,8 @@ int numGroupingVars;
 vector<string> grouping_attr;
 vector<string> fvect;
 vector<string> phi;
+
+string whereClause;
 
 /* combination of unique attributes of select_attr and fvect */ 
 vector<string> mf_define;
@@ -77,6 +80,27 @@ public:
 		else
 			cout << "[" << maxlength << "];" << endl;
 	}
+
+	/* cout << endl << "List" << endl;
+	
+	for(unsigned int i = 0; i < mylist.size(); i++)
+	{
+		cout << mylist[i]->colName << endl;
+	} 
+
+	cout << endl << "function name" << endl;
+	
+	for(unsigned int i = 0; i < mylist.size(); i++)
+	{
+		cout << mylist[i]->fnName << endl;
+	} 
+
+	cout << endl << "number" << endl;
+	
+	for(unsigned int i = 0; i < mylist.size(); i++)
+	{
+		cout << mylist[i]->num << endl;
+	} */
 };
 
 /* list that contains all the objects that will be inserted in our mf struct */
@@ -129,6 +153,8 @@ void fileParser()
 		{
 			counter++;
 
+			/* cout << "Counter = " << counter << endl; */
+
 			getline(fin, line);
 
 			if(counter == 1 || counter == 3 || counter == 4)
@@ -141,6 +167,11 @@ void fileParser()
 				numGroupingVars = atoi((char*)line.c_str());
 			}
 
+			else if(counter == 5)
+			{
+				whereClause = line;
+			}
+
 			else
 			{
 				phi.push_back(line);
@@ -149,6 +180,36 @@ void fileParser()
 	}
 
 	fin.close();
+	// printInput();
+}
+
+void printInput()
+{
+	int i;
+
+	for(i=0; i<select_attr.size();i++)
+	{
+		cout << select_attr[i] << endl;
+	}
+
+	cout << endl << "Number of grouping variables= " << numGroupingVars << endl << endl;
+
+	for(i=0; i<grouping_attr.size(); i++)
+	{
+		cout << grouping_attr[i] << endl;
+	}
+
+	for(i=0; i<fvect.size(); i++)
+	{
+		cout << fvect[i] << endl;
+	}
+
+	cout << endl << "Where clause = " << whereClause << endl << endl;
+
+	for (i=0; i<phi.size(); i++)
+	{
+		cout << phi[i] << endl;
+	}
 }
 
 void makeNewVector()
@@ -163,7 +224,7 @@ void makeNewVector()
 
 		for(unsigned int j = 0; j < fvect.size(); j++)
 		{
-			cout << "Comparing " << select_attr[i] << " with " <<  fvect[j] << endl;
+			// cout << "Comparing " << select_attr[i] << " with " <<  fvect[j] << endl;
 
 			if(fvect[j] == select_attr[i])
 			{
@@ -219,7 +280,7 @@ int main()
 	// postgres local vars
 	PGconn          *conn;
 	PGresult        *res;
-	int             rec_count;
+	int             rec_count; 
 
 	string dbname = "sales";
 
@@ -232,28 +293,7 @@ int main()
 	// make objects for each element in the mf_define vector
 	makeObjects();
 
-	cout << endl << "List" << endl;
-	
-	for(unsigned int i = 0; i < mylist.size(); i++)
-	{
-		cout << mylist[i]->colName << endl;
-	} 
-
-	cout << endl << "function name" << endl;
-	
-	for(unsigned int i = 0; i < mylist.size(); i++)
-	{
-		cout << mylist[i]->fnName << endl;
-	} 
-
-	cout << endl << "number" << endl;
-	
-	for(unsigned int i = 0; i < mylist.size(); i++)
-	{
-		cout << mylist[i]->num << endl;
-	} 
-
-	//postgres code
+	// postgres code
 	conn = PQconnectdb("dbname=jrodrig9 host=postgres.cs.stevens.edu user=jrodrig9 password=Johny10353976");
 
     if (PQstatus(conn) == CONNECTION_BAD) 

@@ -1,3 +1,8 @@
 prod,month,cnt_all_1,cnt_all_2
 3
 cust
+avg_quant_1,cnt_all_2
+year=1997 AND name='jp'
+1.state='NY'
+2.state='CT'
+3.state='NJ'
