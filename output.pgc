@@ -1,0 +1,51 @@
+EXEC SQL BEGIN DECLARE SECTION;
+struct{
+char	prod[21];
+int	month;
+int	cnt1;
+int	cnt2;
+int	avg1;
+} mf_structure[500];
+EXEC SQL END DECLARE SECTION;
+EXEC SQL INCLUDE sqlca; 
+ 
+ 
+ 
+void	output_record(); 
+
+int main(int argc, char* argv[])
+{ 
+
+	EXEC SQL CONNECT TO jrodrig9 USER jrodrig9 IDENTIFIED BY Johny10353976;
+	EXEC SQL WHENEVER sqlerror sqlprint;
+
+
+	printf(" prod	| month	| cnt1	| cnt2	| avg1	| \n");
+ 
+ 
+
+	EXEC SQL DECLARE mycursor CURSOR FOR SELECT prod, month FROM sales WHERE year=1997;
+	EXEC SQL SET TRANSACTION read only;
+	EXEC SQL OPEN mycursor;
+	EXEC SQL FETCH FROM mycursor INTO :mf_structure[0]->prod, :mf_structure[0]->month;
+	int index = 1;
+	while (sqlca.sqlcode == 0)
+	{
+		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index]->prod, :mf_structure[index]->month;
+		index++;
+	}
+	EXEC SQL CLOSE mycursor;
+
+
+	//A WHILE LOOP FOR VAR 1 WILL BE INSERTED HERE
+	//A WHILE LOOP FOR VAR 2 WILL BE INSERTED HERE
+	//A WHILE LOOP FOR VAR 3 WILL BE INSERTED HERE
+	return 0;
+}
+
+void output_record()
+{
+for (int i =0; i < 10; i++) 
+	{
+		printf(" %-5s | ",mf_structure[i].prod;
+}

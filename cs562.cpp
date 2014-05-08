@@ -12,6 +12,7 @@
 
 using namespace std;
 
+ofstream outfile ("output.pgc");
 void fileParser();
 void split(string& str, char delim, int num);
 void makeNewVector();
@@ -26,6 +27,7 @@ vector<string> fvect;
 vector<string> phi;
 
 string whereClause;
+vector<string> firstSelect;
 
 /* combination of unique attributes of select_attr and fvect */ 
 vector<string> mf_define;
@@ -63,22 +65,38 @@ public:
 		maxlength = len;
 	}
 	
+	void getName()
+	{
+		if (fnName == "none")
+			outfile << colName;
+		else
+			outfile << fnName << num;			
+	}
+	
 	void printMFStruct()
 	{
 		if (fnName == "cnt")
-			cout << "int\t";
+			outfile << "int\t";
 		else
-			cout << dataType << "\t";
+			outfile << dataType << "\t";
 		
 		if (fnName == "none")
-			cout << colName;
+			outfile << colName;
 		else 
-			cout << fnName << num;
+			outfile << fnName << num;
 		
 		if (maxlength <= 0)
-			cout << ";" << endl;
+			outfile << ";" << endl;
 		else
-			cout << "[" << maxlength << "];" << endl;
+			outfile << "[" << maxlength << "];" << endl;
+	}
+	
+	string getGroupAttr()
+	{
+		if (fnName == "none")
+			return colName;
+		else
+			return "";
 	}
 
 	/* cout << endl << "List" << endl;
@@ -216,17 +234,17 @@ void makeNewVector()
 {
 	bool add;
 
-	mf_define = fvect;
+	mf_define = select_attr;
 
-	for(unsigned int i = 0; i < select_attr.size(); i++)
+	for(unsigned int i = 0; i < fvect.size(); i++)
 	{
 		add = true;
 
-		for(unsigned int j = 0; j < fvect.size(); j++)
+		for(unsigned int j = 0; j < select_attr.size(); j++)
 		{
 			// cout << "Comparing " << select_attr[i] << " with " <<  fvect[j] << endl;
 
-			if(fvect[j] == select_attr[i])
+			if(fvect[i] == select_attr[j])
 			{
 				add = false;
 				break;
@@ -235,7 +253,7 @@ void makeNewVector()
 
 		if(add)
 		{
-			mf_define.push_back(select_attr[i]);
+			mf_define.push_back(fvect[i]);
 		}
 	}
 }
@@ -332,13 +350,64 @@ int main()
 			}
 		}	
    	}
-	cout << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
-	cout << "struct{" << endl;
+	outfile << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
+	outfile << "struct{" << endl;
 	for (unsigned int i=0; i < mylist.size(); i++)
 		mylist[i]->printMFStruct();
-	cout << "} mf_structure[500];" << endl;
-	cout << "EXEC SQL END DECLARE SECTION;" << endl;
-	cout << "EXEC SQL INCLUDE sqlca;" << endl;
+	outfile << "} mf_structure[500];" << endl;
+	outfile << "EXEC SQL END DECLARE SECTION;" << endl;
+	outfile << "EXEC SQL INCLUDE sqlca; \n \n \n \n";
+	outfile << "void	output_record(); \n\n";
+	outfile << "int main(int argc, char* argv[])\n";
+	outfile << "{ \n\n";
+	outfile << "\tEXEC SQL CONNECT TO jrodrig9 USER jrodrig9 IDENTIFIED BY Johny10353976;\n";
+	outfile << "\tEXEC SQL WHENEVER sqlerror sqlprint;\n\n\n";
+	
+	//PRINT HEADER:
+	outfile << "\tprintf(\" ";
+	for (unsigned int i=0; i < mylist.size(); i++)
+	{
+		mylist[i]->getName();
+		outfile << "\t| ";
+	}
+	outfile << "\\n\");\n \n \n" << endl;
+	
+	// FIRST SCAN
+	for (unsigned int i=0; i < mylist.size(); i++)
+	{
+		string temp = mylist[i]->getGroupAttr();
+		if (temp != "")
+			firstSelect.push_back(mylist[i]->getGroupAttr());
+		
+	}
+	
+	outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT " << firstSelect[0];
+	for (unsigned int i=1; i < firstSelect.size(); i++)
+		outfile << ", " << firstSelect[i];
+	outfile << " FROM sales WHERE " << whereClause << ";\n";
+	outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
+	outfile << "\tEXEC SQL OPEN mycursor;" << endl;
+	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]->" << firstSelect[0];
+	for (unsigned int i=1; i < firstSelect.size(); i++)
+		outfile << ", :mf_structure[0]->" << firstSelect[i];
+	outfile << ";\n\tint index = 1;" << endl;
+	outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
+	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]->" << firstSelect[0];
+	for (unsigned int i=1; i < firstSelect.size(); i++)
+		outfile << ", :mf_structure[index]->" << firstSelect[i];
+	outfile << ";\n\t\tindex++;\n\t}\n";
+	outfile << "\tEXEC SQL CLOSE mycursor;\n\n" << endl;
+	
+	for (unsigned int i=1; i <= numGroupingVars; i++)
+		outfile << "\t//A WHILE LOOP FOR VAR " << i << " WILL BE INSERTED HERE\n";
+	
+	outfile << "\treturn 0;\n}\n\n";
+	outfile << "void output_record()\n{\n";
+	outfile << "for (int i =0; i < 10; i++) \n\t{\n";
+	outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]." << firstSelect[0] << ";\n}\n";
+	
+	
+	
 	PQclear(res);
 
     PQfinish(conn);
