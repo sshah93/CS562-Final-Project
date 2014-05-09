@@ -81,7 +81,12 @@ public:
 			outfile << dataType << "\t";
 		
 		if (fnName == "none")
-			outfile << colName;
+		{
+			if (colName == "month")
+				outfile << "mMonth";
+			else
+				outfile << colName;
+		}
 		else 
 			outfile << fnName << num;
 		
@@ -94,7 +99,12 @@ public:
 	string getGroupAttr()
 	{
 		if (fnName == "none")
-			return colName;
+		{
+			if (colName == "month")
+				return "mMonth";
+			else
+				return colName;
+		}
 		else
 			return "";
 	}
@@ -287,7 +297,7 @@ void makeObjects()
 			number = 0;
 			col_name = mf_define[i]; 
 		}
-
+		
 		Agr* newAgr = new Agr(col_name, fn_name, number);
 		mylist.push_back(newAgr); 
 	}
@@ -350,6 +360,7 @@ int main()
 			}
 		}	
    	}
+	outfile << "#include\t<stdio.h>\n" << endl;
 	outfile << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
 	outfile << "struct{" << endl;
 	for (unsigned int i=0; i < mylist.size(); i++)
@@ -387,24 +398,26 @@ int main()
 	outfile << " FROM sales WHERE " << whereClause << ";\n";
 	outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
 	outfile << "\tEXEC SQL OPEN mycursor;" << endl;
-	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]->" << firstSelect[0];
+	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]." << firstSelect[0];
 	for (unsigned int i=1; i < firstSelect.size(); i++)
-		outfile << ", :mf_structure[0]->" << firstSelect[i];
+		outfile << ", :mf_structure[0]." << firstSelect[i];
 	outfile << ";\n\tint index = 1;" << endl;
 	outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
-	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]->" << firstSelect[0];
+	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << firstSelect[0];
 	for (unsigned int i=1; i < firstSelect.size(); i++)
-		outfile << ", :mf_structure[index]->" << firstSelect[i];
+		outfile << ", :mf_structure[index]." << firstSelect[i];
 	outfile << ";\n\t\tindex++;\n\t}\n";
 	outfile << "\tEXEC SQL CLOSE mycursor;\n\n" << endl;
+	ourfile << "output_record();\n";
 	
 	for (unsigned int i=1; i <= numGroupingVars; i++)
 		outfile << "\t//A WHILE LOOP FOR VAR " << i << " WILL BE INSERTED HERE\n";
 	
 	outfile << "\treturn 0;\n}\n\n";
 	outfile << "void output_record()\n{\n";
-	outfile << "for (int i =0; i < 10; i++) \n\t{\n";
-	outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]." << firstSelect[0] << ";\n}\n";
+	outfile << "int i =0;\n";
+	outfile << "for (; i < 10; i++) \n\t{\n";
+	outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]." << firstSelect[0] << ");\n}\n}\n";
 	
 	
 	
