@@ -1,12 +1,14 @@
 #include	<stdio.h>
 
 EXEC SQL BEGIN DECLARE SECTION;
-struct{
-char	prod[21];
-int	mMonth;
-int	cnt1;
-int	cnt2;
-int	avg1;
+struct
+{
+	char	prod[21];
+	int	mMonth;
+	int	mYear;
+	int	cnt1;
+	int	cnt2;
+	int	avg1;
 } mf_structure[500];
 EXEC SQL END DECLARE SECTION;
 EXEC SQL INCLUDE sqlca; 
@@ -22,23 +24,24 @@ int main(int argc, char* argv[])
 	EXEC SQL WHENEVER sqlerror sqlprint;
 
 
-	printf(" prod	| month	| cnt1	| cnt2	| avg1	| \n");
+	printf(" prod	| month	| year	| cnt1	| cnt2	| avg1	| \n");
  
  
 
-	EXEC SQL DECLARE mycursor CURSOR FOR SELECT prod, month FROM sales WHERE year=1997;
+	EXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT prod, month, year FROM sales WHERE year=1997;
 	EXEC SQL SET TRANSACTION read only;
 	EXEC SQL OPEN mycursor;
-	EXEC SQL FETCH FROM mycursor INTO :mf_structure[0].prod, :mf_structure[0].mMonth;
+	EXEC SQL FETCH FROM mycursor INTO :mf_structure[0].prod, :mf_structure[0].mMonth, :mf_structure[0].mYear;
 	int index = 1;
 	while (sqlca.sqlcode == 0)
 	{
-		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth;
+		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
 		index++;
 	}
 	EXEC SQL CLOSE mycursor;
-	output_record();
 
+
+output_record();
 	//A WHILE LOOP FOR VAR 1 WILL BE INSERTED HERE
 	//A WHILE LOOP FOR VAR 2 WILL BE INSERTED HERE
 	//A WHILE LOOP FOR VAR 3 WILL BE INSERTED HERE
@@ -46,9 +49,12 @@ int main(int argc, char* argv[])
 }
 
 void output_record()
-{int i =0;
-for (; i < 10; i++) 
+{
+	int i =0;
+	for (; i < 10; i++) 
 	{
 		printf(" %-5s | ",mf_structure[i].prod);
-}
+		printf(" %-5i | ",mf_structure[i].mMonth);
+		printf(" %-5i | \n",mf_structure[i].mYear);
+	}
 }

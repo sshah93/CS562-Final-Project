@@ -1,6 +1,6 @@
-prod,month,cnt_all_1,cnt_all_2
+prod,month,year,cnt_all_1,cnt_all_2
 3
-prod
+prod,month,year
 avg_quant_1,cnt_all_2
 year=1997
 1.state='NY'

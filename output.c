@@ -10,32 +10,37 @@
 
 /* exec sql begin declare section */
 
-	
-	
-	
-	
-	
+
+		
+		
+		
+		
+		
+		
  
 
-#line 10 "output.pgc"
+#line 12 "output.pgc"
  struct { 
-#line 5 "output.pgc"
+#line 6 "output.pgc"
  char prod [ 21 ] ;
  
-#line 6 "output.pgc"
+#line 7 "output.pgc"
  int mMonth ;
  
-#line 7 "output.pgc"
- int cnt1 ;
- 
 #line 8 "output.pgc"
- int cnt2 ;
+ int mYear ;
  
 #line 9 "output.pgc"
+ int cnt1 ;
+ 
+#line 10 "output.pgc"
+ int cnt2 ;
+ 
+#line 11 "output.pgc"
  int avg1 ;
  } mf_structure [ 500 ] ;
 /* exec sql end declare section */
-#line 11 "output.pgc"
+#line 13 "output.pgc"
 
 
 #line 1 "/usr/include/postgresql/sqlca.h"
@@ -106,7 +111,7 @@ struct sqlca_t *ECPGget_sqlca(void);
 
 #endif
 
-#line 12 "output.pgc"
+#line 14 "output.pgc"
  
  
  
@@ -117,41 +122,43 @@ int main(int argc, char* argv[])
 { 
 
 	{ ECPGconnect(__LINE__, 0, "jrodrig9" , "jrodrig9" , "Johny10353976" , NULL, 0); }
-#line 21 "output.pgc"
+#line 23 "output.pgc"
 
 	/* exec sql whenever sqlerror  sqlprint ; */
-#line 22 "output.pgc"
+#line 24 "output.pgc"
 
 
 
-	printf(" prod	| month	| cnt1	| cnt2	| avg1	| \n");
+	printf(" prod	| month	| year	| cnt1	| cnt2	| avg1	| \n");
  
  
 
-	/* declare mycursor cursor for select prod , month from sales where year = 1997 */
-#line 29 "output.pgc"
+	/* declare mycursor cursor for select distinct prod , month , year from sales where year = 1997 */
+#line 31 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "set transaction read only", ECPGt_EOIT, ECPGt_EORT);
-#line 30 "output.pgc"
+#line 32 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 30 "output.pgc"
+#line 32 "output.pgc"
 
-	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare mycursor cursor for select prod , month from sales where year = 1997", ECPGt_EOIT, ECPGt_EORT);
-#line 31 "output.pgc"
+	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare mycursor cursor for select distinct prod , month , year from sales where year = 1997", ECPGt_EOIT, ECPGt_EORT);
+#line 33 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 31 "output.pgc"
+#line 33 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor", ECPGt_EOIT, 
 	ECPGt_char,(mf_structure[0].prod),(long)21,(long)1,(21)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(mf_structure[0].mMonth),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(mf_structure[0].mYear),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 32 "output.pgc"
+#line 34 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 32 "output.pgc"
+#line 34 "output.pgc"
 
 	int index = 1;
 	while (sqlca.sqlcode == 0)
@@ -160,22 +167,25 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	ECPGt_char,(mf_structure[index].prod),(long)21,(long)1,(21)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(mf_structure[index].mMonth),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(mf_structure[index].mYear),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 36 "output.pgc"
+#line 38 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 36 "output.pgc"
+#line 38 "output.pgc"
 
 		index++;
 	}
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor", ECPGt_EOIT, ECPGt_EORT);
-#line 39 "output.pgc"
+#line 41 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 39 "output.pgc"
+#line 41 "output.pgc"
 
-	output_record();
 
+
+output_record();
 	//A WHILE LOOP FOR VAR 1 WILL BE INSERTED HERE
 	//A WHILE LOOP FOR VAR 2 WILL BE INSERTED HERE
 	//A WHILE LOOP FOR VAR 3 WILL BE INSERTED HERE
@@ -183,9 +193,12 @@ if (sqlca.sqlcode < 0) sqlprint();}
 }
 
 void output_record()
-{int i =0;
-for (; i < 10; i++) 
+{
+	int i =0;
+	for (; i < 10; i++) 
 	{
 		printf(" %-5s | ",mf_structure[i].prod);
-}
+		printf(" %-5i | ",mf_structure[i].mMonth);
+		printf(" %-5i | \n",mf_structure[i].mYear);
+	}
 }

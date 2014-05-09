@@ -75,6 +75,7 @@ public:
 	
 	void printMFStruct()
 	{
+		outfile << "\t";
 		if (fnName == "cnt")
 			outfile << "int\t";
 		else
@@ -84,6 +85,10 @@ public:
 		{
 			if (colName == "month")
 				outfile << "mMonth";
+			else if (colName == "year")
+				outfile << "mYear";
+			else if (colName == "day")
+				outfile << "mDay";
 			else
 				outfile << colName;
 		}
@@ -96,18 +101,22 @@ public:
 			outfile << "[" << maxlength << "];" << endl;
 	}
 	
-	string getGroupAttr()
+	/*string getGroupAttr()
 	{
 		if (fnName == "none")
 		{
 			if (colName == "month")
 				return "mMonth";
+			else if (colName == "year")
+				return "mYear";
+			else if (colName == "day")
+				return "mDay";
 			else
 				return colName;
 		}
 		else
 			return "";
-	}
+	}*/
 
 	/* cout << endl << "List" << endl;
 	
@@ -303,6 +312,18 @@ void makeObjects()
 	}
 }
 
+string convertName(string str)
+{
+	if (str == "month")
+		return "mMonth";
+	else if (str == "year")
+		return "mYear";
+	else if (str == "day")
+			return "mDay";
+	else
+		return str;
+}
+	
 int main()
 {
 	// postgres local vars
@@ -362,7 +383,7 @@ int main()
    	}
 	outfile << "#include\t<stdio.h>\n" << endl;
 	outfile << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
-	outfile << "struct{" << endl;
+	outfile << "struct\n{" << endl;
 	for (unsigned int i=0; i < mylist.size(); i++)
 		mylist[i]->printMFStruct();
 	outfile << "} mf_structure[500];" << endl;
@@ -384,40 +405,39 @@ int main()
 	outfile << "\\n\");\n \n \n" << endl;
 	
 	// FIRST SCAN
-	for (unsigned int i=0; i < mylist.size(); i++)
+	/*for (unsigned int i=0; i < mylist.size(); i++)
 	{
 		string temp = mylist[i]->getGroupAttr();
 		if (temp != "")
 			firstSelect.push_back(mylist[i]->getGroupAttr());
-		
-	}
+	}*/
 	
-	outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT " << firstSelect[0];
-	for (unsigned int i=1; i < firstSelect.size(); i++)
-		outfile << ", " << firstSelect[i];
+	outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT " << grouping_attr[0];
+	for (unsigned int i=1; i < grouping_attr.size(); i++)
+		outfile << ", " << grouping_attr[i];
 	outfile << " FROM sales WHERE " << whereClause << ";\n";
 	outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
 	outfile << "\tEXEC SQL OPEN mycursor;" << endl;
-	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]." << firstSelect[0];
-	for (unsigned int i=1; i < firstSelect.size(); i++)
-		outfile << ", :mf_structure[0]." << firstSelect[i];
+	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]." << convertName(grouping_attr[0]);
+	for (unsigned int i=1; i < grouping_attr.size(); i++)
+		outfile << ", :mf_structure[0]." << convertName(grouping_attr[i]);
 	outfile << ";\n\tint index = 1;" << endl;
 	outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
-	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << firstSelect[0];
-	for (unsigned int i=1; i < firstSelect.size(); i++)
-		outfile << ", :mf_structure[index]." << firstSelect[i];
+	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << convertName(grouping_attr[0]);
+	for (unsigned int i=1; i < grouping_attr.size(); i++)
+		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
 	outfile << ";\n\t\tindex++;\n\t}\n";
 	outfile << "\tEXEC SQL CLOSE mycursor;\n\n" << endl;
-	ourfile << "output_record();\n";
+	outfile << "output_record();\n";
 	
 	for (unsigned int i=1; i <= numGroupingVars; i++)
 		outfile << "\t//A WHILE LOOP FOR VAR " << i << " WILL BE INSERTED HERE\n";
 	
 	outfile << "\treturn 0;\n}\n\n";
 	outfile << "void output_record()\n{\n";
-	outfile << "int i =0;\n";
-	outfile << "for (; i < 10; i++) \n\t{\n";
-	outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]." << firstSelect[0] << ");\n}\n}\n";
+	outfile << "\tint i =0;\n";
+	outfile << "\tfor (; i < 10; i++) \n\t{\n";
+	outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]." << convertName(grouping_attr[0]) << ");\n\t}\n}\n";
 	
 	
 	
