@@ -24,7 +24,7 @@ vector<string> select_attr;
 int numGroupingVars;
 vector<string> grouping_attr;
 vector<string> fvect;
-vector<vector<string>> phi(1, vector<string>());
+vector<vector<string>> phi(1, vector<string>(1));
 
 string whereClause;
 vector<string> firstSelect;
@@ -181,6 +181,7 @@ void fileParser()
 	if(fin.is_open())
 	{
 		int counter;
+		int numTemp;
 		counter = 0;
 
 		string line;
@@ -211,11 +212,12 @@ void fileParser()
 
 			else
 			{
-				int numTemp = atoi(line.c_str());
+				numTemp = atoi(line.c_str());
 
-				string myline = line.substr(line.find('.')+1);
-
-				phi.at(numTemp-1).push_back(myline);
+				if(numTemp != 0)
+				{	
+					phi[numTemp-1].push_back(line);
+				}
 
 				//phi.push_back(line);
 			}
@@ -343,10 +345,10 @@ int main()
 
 	phi.resize(numGroupingVars);
 
-	/* for(int i = 0; i <= numGroupingVars; i++)
+	for(int i = 0; i <= numGroupingVars; i++)
 	{
 		phi[i].resize(numGroupingVars);
-	} */
+	} 
 
 	// call the function to get all the vectors ready for us
 	fileParser();
