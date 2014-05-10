@@ -1,5 +1,5 @@
 /* Team Name: Team Binary
- * Team Members: Suketu Shah and JoaoPaulo Rodgrigues
+ * Team Members: Suketu Shah and JoaoPaulo Rodgriues
  *
  * File - header.h 
  * Source code File - cs562.cpp
