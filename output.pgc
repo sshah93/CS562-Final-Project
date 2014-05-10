@@ -6,7 +6,7 @@ struct
 	char	prod[21];
 	int	mMonth;
 	int	mYear;
-	int	avg_quant_1;
+	int	min_quant_1;
 	int	cnt_quant_2;
 	int	max_quant_1;
 	int	sum_quant_3;
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 	EXEC SQL WHENEVER sqlerror sqlprint;
 
 
-	printf(" prod	| mMonth	| mYear	| avg_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
+	printf(" prod	| mMonth	| mYear	| min_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
  
  
 
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 	EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
 	while (sqlca.sqlcode == 0)
 	{
-		mf_structure[index].avg_quant_1 = 0;
+		mf_structure[index].min_quant_1 = 0;
 		mf_structure[index].cnt_quant_2 = 0;
 		mf_structure[index].max_quant_1 = 0;
 		mf_structure[index].sum_quant_3 = 0;
@@ -76,9 +76,14 @@ int main(int argc, char* argv[])
 		{
 			if (strcmp(mf_structure[index].prod, "Eggs") == 0 && sale_rec.mYear == 1997)
 			{
-					sum = sum + sale_rec.quant;
-					count++;
- 					mf_structure[index].avg_quant_1= sum/count;
+					if ( mf_structure[index].min_quant_1 == 0)
+					{
+						mf_structure[index].min_quant_1= sale_rec.quant;
+					}
+					if ( sale_rec.quant < mf_structure[index].min_quant_1)
+					{
+						mf_structure[index].min_quant_1= sale_rec.quant;
+					}
 					if ( sale_rec.quant > mf_structure[index].max_quant_1)
 					{
 						mf_structure[index].max_quant_1 = sale_rec.quant;
@@ -157,7 +162,7 @@ void output_record()
 		printf(" %-5s | ",mf_structure[i].prod);
 		printf(" %-5d | ",mf_structure[i].mMonth);
 		printf(" %-5d | ",mf_structure[i].mYear);
-		printf(" %-5d | ",mf_structure[i].avg_quant_1);
+		printf(" %-5d | ",mf_structure[i].min_quant_1);
 		printf(" %-5d | ",mf_structure[i].cnt_quant_2);
 		printf(" %-5d | ",mf_structure[i].max_quant_1);
 		printf(" %-5d | ",mf_structure[i].sum_quant_3);

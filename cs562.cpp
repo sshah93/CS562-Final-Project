@@ -147,6 +147,8 @@ public:
 			}
 			else if (fnName == "min")
 			{
+				outfile << "\t\t\t\t\tif ( mf_structure[index]." << fnName << "_" << colName << "_" << num << " == 0)\n\t\t\t\t\t{\n";
+				outfile << "\t\t\t\t\t\tmf_structure[index]." << fnName << "_" << colName << "_" << num << "= sale_rec." << colName << ";\n\t\t\t\t\t}\n";
 				outfile << "\t\t\t\t\tif ( sale_rec." << colName << " < mf_structure[index]." << fnName << "_" << colName << "_" << num << ")\n\t\t\t\t\t{\n";
 				outfile << "\t\t\t\t\t\tmf_structure[index]." << fnName << "_" << colName << "_" << num << "= sale_rec." << colName << ";\n\t\t\t\t\t}\n";
 			}

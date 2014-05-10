@@ -1,4 +1,4 @@
-prod,month,year,avg_quant_1,cnt_quant_2
+prod,month,year,min_quant_1,cnt_quant_2
 3
 prod,month,year
 max_quant_1,sum_quant_3
