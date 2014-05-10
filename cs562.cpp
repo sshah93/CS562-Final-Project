@@ -547,9 +547,16 @@ int main()
 	outfile << "#include\t<stdio.h>\n" << endl;
 	outfile << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
 	outfile << "struct\n{" << endl;
+	
 	for (unsigned int i=0; i < mylist.size(); i++)
+	{
 		mylist[i]->printMFStruct();
+	}
+
+	// finish printing the mf struct
 	outfile << "} mf_structure[500]; \n\n" << endl;
+	
+	// create a new struct that contains the entire db columns
 	outfile << "struct\n{\n\t";
 	outfile << "char	*cust;\n\t";
 	outfile << "char	*prod;\n\t";
@@ -559,6 +566,8 @@ int main()
 	outfile << "char	*state;\n\t";
 	outfile << "int	 quant;\n";
 	outfile << "} 	sale_rec;\n\n";
+	// finsih printing the struct
+
 	outfile << "EXEC SQL END DECLARE SECTION;" << endl;
 	outfile << "EXEC SQL INCLUDE sqlca; \n \n \n \n";
 	outfile << "void	output_record(); \n\n";
@@ -577,26 +586,42 @@ int main()
 		mylist[i]->getName();
 		outfile << "\t| ";
 	}
+
 	outfile << "\\n\");\n \n \n" << endl;
 	
 	// FIRST SCAN
 	outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT " << grouping_attr[0];
+	
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
+	{
 		outfile << ", " << grouping_attr[i];
+	}
+
 	outfile << " FROM sales WHERE " << whereClause << ";\n";
 	outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
 	outfile << "\tEXEC SQL OPEN mycursor;" << endl;
 	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << convertName(grouping_attr[0]);
-	for (unsigned int i=1; i < grouping_attr.size(); i++)
-		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
 	
+	for (unsigned int i=1; i < grouping_attr.size(); i++)
+	{
+		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
+	}
+
 	outfile << ";\n\twhile (sqlca.sqlcode == 0)\n\t{\n";
+	
 	for (unsigned int i=0; i < mylist.size(); i++)
+	{
 		mylist[i]->initAgVariables();
+	}	
+
 	outfile << "\t\tindex++;\n";
 	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << convertName(grouping_attr[0]);
+	
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
+	{
 		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
+	}	
+
 	outfile << ";\n\t}\n";
 	outfile << "\tEXEC SQL CLOSE mycursor;\n\n" << endl;
 	
@@ -605,34 +630,44 @@ int main()
 		outfile << "\t//A WHILE LOOP FOR VAR " << i << "\n";
 		outfile << "\tcount = 0;" << endl;
 		outfile << "\tsum = 0;" << endl;
+		
 		outfile << "\tEXEC SQL DECLARE mycursor" << i << " CURSOR FOR SELECT * FROM sales;\n";
 		outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
 		outfile << "\tEXEC SQL OPEN mycursor" << i << ";\n";
 		outfile << "\tEXEC SQL FETCH FROM mycursor" << i << " INTO :sale_rec;\n";
+		
 		outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
 		outfile << "\t\tindex = 0;\n\t\t";
+		
 		outfile << "while (index <= 500)\n\t\t{\n\t\t\t";
 		outfile << "if (";
 		outfile << phi[i-1] << ")\n\t\t\t{\n";
+	
 		for (unsigned j = 0; j < mylist.size(); j++)
+		{
 			mylist[j]->outputFunction(i);
+		}
+
 		outfile << "\t\t\t}\n\t\t\tindex++;\n\t\t}\n\t";
 		outfile << "\tEXEC SQL FETCH FROM mycursor" << i << " INTO :sale_rec;\n";
 		outfile <<"\t}\n";
 		outfile << "\tEXEC SQL CLOSE mycursor" << i << ";\n\n" << endl;
 		outfile << "\n\n";
 	}
+	
 	outfile << "\toutput_record();\n";
 	outfile << "\treturn 0;\n}\n\n";
 	outfile << "void output_record()\n{\n";
 	outfile << "\tint i =0;\n";
 	outfile << "\tfor (; i < 500; i++) \n\t{\n";
+	
 	if (mylist[0]->dataType == "char")
 	{
 		outfile << "\tif (strcmp(mf_structure[i].";
 		mylist[0]->getName();
 		outfile << ", \"\") != 0)\n\t{\n";
 	}
+	
 	else
 	{
 		outfile << "\tif (mf_structure[i].";
@@ -648,6 +683,7 @@ int main()
 			mylist[i]->getName();
 			outfile << ");\n";
 		}
+		
 		else 
 		{
 			outfile << "\t\tprintf(\" %-5d | \",mf_structure[i].";
@@ -657,9 +693,6 @@ int main()
 	}
 	outfile << "\t\tprintf(\"\\n\");\n\t}\n\n\t}\n}\n";
 	
-	
-	
-
     PQfinish(conn);
 
 	return 0; 
