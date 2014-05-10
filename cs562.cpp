@@ -68,9 +68,18 @@ public:
 	void getName()
 	{
 		if (fnName == "none")
-			outfile << colName;
+			{
+				if (colName == "month")
+					outfile << "mMonth";
+				else if (colName == "year")
+					outfile << "mYear";
+				else if (colName == "day")
+					outfile << "mDay";
+				else
+					outfile << colName;
+			}
 		else
-			outfile << fnName << num;			
+			outfile << fnName << "_" << colName << "_" << num;			
 	}
 	
 	void printMFStruct()
@@ -499,7 +508,6 @@ int main()
 		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
 	outfile << ";\n\t}\n";
 	outfile << "\tEXEC SQL CLOSE mycursor;\n\n" << endl;
-	outfile << "output_record();\n";
 	
 	for (unsigned int i=1; i <= numGroupingVars; i++)
 	{
@@ -521,14 +529,42 @@ int main()
 		outfile << "\tEXEC SQL FETCH FROM mycursor" << i << " INTO :sale_rec;\n";
 		outfile <<"\t}\n";
 		outfile << "\tEXEC SQL CLOSE mycursor" << i << ";\n\n" << endl;
-		outfile << "\n\n\n";
+		outfile << "\n\n";
 	}
+	outfile << "\toutput_record();\n";
 	outfile << "\treturn 0;\n}\n\n";
 	outfile << "void output_record()\n{\n";
 	outfile << "\tint i =0;\n";
-	outfile << "\tfor (; i < 10; i++) \n\t{\n";
-	outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]." << convertName(grouping_attr[0]) << ");\n\t}\n}\n";
-	
+	outfile << "\tfor (; i < 500; i++) \n\t{\n";
+	if (mylist[0]->dataType == "char")
+	{
+		outfile << "\tif (strcmp(mf_structure[i].";
+		mylist[0]->getName();
+		outfile << ", \"\") != 0)\n\t{\n";
+	}
+	else
+	{
+		outfile << "\tif (mf_structure[i].";
+		mylist[0]->getName();
+		outfile << " == 0)\n\t{\n";
+	}
+		
+	for (unsigned int i = 0; i < mylist.size(); i++)
+	{
+		if (mylist[i]->dataType == "char")
+		{
+			outfile << "\t\tprintf(\" %-5s | \",mf_structure[i]."; 
+			mylist[i]->getName();
+			outfile << ");\n";
+		}
+		else 
+		{
+			outfile << "\t\tprintf(\" %-5d | \",mf_structure[i].";
+			mylist[i]->getName();
+			outfile << ");\n";
+		}
+	}
+	outfile << "\t\tprintf(\"\\n\");\n\t}\n\n\t}\n}\n";
 	
 	
 	

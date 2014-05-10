@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 	EXEC SQL WHENEVER sqlerror sqlprint;
 
 
-	printf(" prod	| month	| year	| avg1	| cnt2	| max1	| sum3	| \n");
+	printf(" prod	| mMonth	| mYear	| avg_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
  
  
 
@@ -62,7 +62,6 @@ int main(int argc, char* argv[])
 	EXEC SQL CLOSE mycursor;
 
 
-output_record();
 	//A WHILE LOOP FOR VAR 1
 	count = 0;
 	sum = 0;
@@ -75,7 +74,7 @@ output_record();
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state == "NY" && sale_rec.mYear == 1997 && sale_rec.prod == mf_structure[index].prod)
+			if (strcmp(mf_structure[index].prod, "Eggs") == 0 && sale_rec.mYear == 1997)
 			{
 					sum = sum + sale_rec.quant;
 					count++;
@@ -87,10 +86,9 @@ output_record();
 			}
 			index++;
 		}
-			EXEC SQL FETCH FROM mycursor1 INTO :sale_rec;
+		EXEC SQL FETCH FROM mycursor1 INTO :sale_rec;
 	}
 	EXEC SQL CLOSE mycursor1;
-
 
 
 
@@ -107,16 +105,15 @@ output_record();
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state=="CT")
+			if (strcmp(mf_structure[index].prod, "Pepsi") == 0)
 			{
 					mf_structure[index].cnt_quant_2++;
 			}
 			index++;
 		}
-			EXEC SQL FETCH FROM mycursor2 INTO :sale_rec;
+		EXEC SQL FETCH FROM mycursor2 INTO :sale_rec;
 	}
 	EXEC SQL CLOSE mycursor2;
-
 
 
 
@@ -133,28 +130,39 @@ output_record();
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state=="NJ")
+			if (strcmp(mf_structure[index].prod, "Eggs") == 0)
 			{
 					mf_structure[index].sum_quant_3 = mf_structure[index].sum_quant_3 + sale_rec.quant;
 			}
 			index++;
 		}
-			EXEC SQL FETCH FROM mycursor3 INTO :sale_rec;
+		EXEC SQL FETCH FROM mycursor3 INTO :sale_rec;
 	}
 	EXEC SQL CLOSE mycursor3;
 
 
 
 
-
+	output_record();
 	return 0;
 }
 
 void output_record()
 {
 	int i =0;
-	for (; i < 10; i++) 
+	for (; i < 500; i++) 
+	{
+	if (strcmp(mf_structure[i].prod, "") != 0)
 	{
 		printf(" %-5s | ",mf_structure[i].prod);
+		printf(" %-5d | ",mf_structure[i].mMonth);
+		printf(" %-5d | ",mf_structure[i].mYear);
+		printf(" %-5d | ",mf_structure[i].avg_quant_1);
+		printf(" %-5d | ",mf_structure[i].cnt_quant_2);
+		printf(" %-5d | ",mf_structure[i].max_quant_1);
+		printf(" %-5d | ",mf_structure[i].sum_quant_3);
+		printf("\n");
+	}
+
 	}
 }

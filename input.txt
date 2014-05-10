@@ -4,12 +4,10 @@ prod,month,year
 max_quant_1,sum_quant_3
 year=1997
 1
-sale_rec.state == "NY"
+strcmp(mf_structure[index].prod, "Eggs") == 0
 1
 sale_rec.mYear == 1997
 2
-sale_rec.state=="CT"
+strcmp(mf_structure[index].prod, "Pepsi") == 0
 3
-sale_rec.state=="NJ"
-1
-sale_rec.prod == mf_structure[index].prod
+strcmp(mf_structure[index].prod, "Eggs") == 0
