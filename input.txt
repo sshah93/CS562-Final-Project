@@ -4,12 +4,12 @@ prod,month,year
 max_quant_1,sum_quant_3
 year=1997
 1
-sale_rec.state == 'NY'
+sale_rec.state == "NY"
 1
 sale_rec.mYear == 1997
 2
-sale_rec.state=='CT'
+sale_rec.state=="CT"
 3
-sale_rec.state=='NJ'
+sale_rec.state=="NJ"
 1
 sale_rec.prod == mf_structure[index].prod

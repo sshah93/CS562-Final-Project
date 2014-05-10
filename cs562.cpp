@@ -517,7 +517,9 @@ int main()
 		outfile << phi[i-1] << ")\n\t\t\t{\n";
 		for (unsigned j = 0; j < mylist.size(); j++)
 			mylist[j]->outputFunction(i);
-		outfile << "\t\t\t}\n\t\t}\n\t}\n";
+		outfile << "\t\t\t}\n\t\t\tindex++;\n\t\t}\n\t";
+		outfile << "\tEXEC SQL FETCH FROM mycursor" << i << " INTO :sale_rec;\n";
+		outfile <<"\t}\n";
 		outfile << "\tEXEC SQL CLOSE mycursor" << i << ";\n\n" << endl;
 		outfile << "\n\n\n";
 	}

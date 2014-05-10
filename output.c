@@ -177,25 +177,22 @@ int main(int argc, char* argv[])
 	printf(" prod	| month	| year	| avg1	| cnt2	| max1	| sum3	| \n");
  
  
-	printf("womp4");
+
 	/* declare mycursor cursor for select distinct prod , month , year from sales where year = 1997 */
 #line 49 "output.pgc"
 
-	printf("womp3");
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "set transaction read only", ECPGt_EOIT, ECPGt_EORT);
-#line 51 "output.pgc"
+#line 50 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 51 "output.pgc"
+#line 50 "output.pgc"
 
-	printf("womp2");
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare mycursor cursor for select distinct prod , month , year from sales where year = 1997", ECPGt_EOIT, ECPGt_EORT);
-#line 53 "output.pgc"
+#line 51 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 53 "output.pgc"
+#line 51 "output.pgc"
 
-	printf("womp1");
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor", ECPGt_EOIT, 
 	ECPGt_char,(mf_structure[index].prod),(long)21,(long)1,(21)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
@@ -203,19 +200,17 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(mf_structure[index].mYear),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 55 "output.pgc"
+#line 52 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 55 "output.pgc"
+#line 52 "output.pgc"
 
-	printf("womp");
 	while (sqlca.sqlcode == 0)
 	{
-		
-		//mf_structure[index].avg_quant_1 = 0;
-		//mf_structure[index].cnt_quant_2 = 0;
-		//mf_structure[index].max_quant_1 = 0;
-		//mf_structure[index].sum_quant_3 = 0;
+		mf_structure[index].avg_quant_1 = 0;
+		mf_structure[index].cnt_quant_2 = 0;
+		mf_structure[index].max_quant_1 = 0;
+		mf_structure[index].sum_quant_3 = 0;
 		index++;
 		{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor", ECPGt_EOIT, 
 	ECPGt_char,(mf_structure[index].prod),(long)21,(long)1,(21)*sizeof(char), 
@@ -224,38 +219,38 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(mf_structure[index].mYear),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 65 "output.pgc"
+#line 60 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 65 "output.pgc"
+#line 60 "output.pgc"
 
 	}
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor", ECPGt_EOIT, ECPGt_EORT);
-#line 67 "output.pgc"
+#line 62 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 67 "output.pgc"
+#line 62 "output.pgc"
 
 
-	
-	output_record();
+
+output_record();
 	//A WHILE LOOP FOR VAR 1
 	count = 0;
 	sum = 0;
 	/* declare mycursor1 cursor for select * from sales */
-#line 74 "output.pgc"
+#line 69 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "set transaction read only", ECPGt_EOIT, ECPGt_EORT);
-#line 75 "output.pgc"
+#line 70 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 75 "output.pgc"
+#line 70 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare mycursor1 cursor for select * from sales", ECPGt_EOIT, ECPGt_EORT);
-#line 76 "output.pgc"
+#line 71 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 76 "output.pgc"
+#line 71 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor1", ECPGt_EOIT, 
 	ECPGt_char,&(sale_rec.cust),(long)0,(long)1,(1)*sizeof(char), 
@@ -272,17 +267,17 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(sale_rec.quant),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 77 "output.pgc"
+#line 72 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 77 "output.pgc"
+#line 72 "output.pgc"
 
 	while (sqlca.sqlcode == 0)
 	{
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state == 'NY' && sale_rec.mYear == 1997 && sale_rec.prod == mf_structure[index].prod)
+			if (sale_rec.state == "NY" && sale_rec.mYear == 1997 && sale_rec.prod == mf_structure[index].prod)
 			{
 					sum = sum + sale_rec.quant;
 					count++;
@@ -292,13 +287,34 @@ if (sqlca.sqlcode < 0) sqlprint();}
 						mf_structure[index].max_quant_1 = sale_rec.quant;
 					}
 			}
+			index++;
 		}
-	}
-	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor1", ECPGt_EOIT, ECPGt_EORT);
-#line 95 "output.pgc"
+			{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor1", ECPGt_EOIT, 
+	ECPGt_char,&(sale_rec.cust),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(sale_rec.prod),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mDay),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mMonth),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mYear),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(sale_rec.state),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.quant),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
+#line 90 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 95 "output.pgc"
+#line 90 "output.pgc"
+
+	}
+	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor1", ECPGt_EOIT, ECPGt_EORT);
+#line 92 "output.pgc"
+
+if (sqlca.sqlcode < 0) sqlprint();}
+#line 92 "output.pgc"
 
 
 
@@ -309,19 +325,19 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	count = 0;
 	sum = 0;
 	/* declare mycursor2 cursor for select * from sales */
-#line 104 "output.pgc"
+#line 101 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "set transaction read only", ECPGt_EOIT, ECPGt_EORT);
-#line 105 "output.pgc"
+#line 102 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 105 "output.pgc"
+#line 102 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare mycursor2 cursor for select * from sales", ECPGt_EOIT, ECPGt_EORT);
-#line 106 "output.pgc"
+#line 103 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 106 "output.pgc"
+#line 103 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor2", ECPGt_EOIT, 
 	ECPGt_char,&(sale_rec.cust),(long)0,(long)1,(1)*sizeof(char), 
@@ -338,27 +354,48 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(sale_rec.quant),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 107 "output.pgc"
+#line 104 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 107 "output.pgc"
+#line 104 "output.pgc"
 
 	while (sqlca.sqlcode == 0)
 	{
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state=='CT')
+			if (sale_rec.state=="CT")
 			{
 					mf_structure[index].cnt_quant_2++;
 			}
+			index++;
 		}
-	}
-	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor2", ECPGt_EOIT, ECPGt_EORT);
-#line 119 "output.pgc"
+			{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor2", ECPGt_EOIT, 
+	ECPGt_char,&(sale_rec.cust),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(sale_rec.prod),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mDay),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mMonth),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mYear),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(sale_rec.state),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.quant),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
+#line 116 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 119 "output.pgc"
+#line 116 "output.pgc"
+
+	}
+	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor2", ECPGt_EOIT, ECPGt_EORT);
+#line 118 "output.pgc"
+
+if (sqlca.sqlcode < 0) sqlprint();}
+#line 118 "output.pgc"
 
 
 
@@ -369,19 +406,19 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	count = 0;
 	sum = 0;
 	/* declare mycursor3 cursor for select * from sales */
-#line 128 "output.pgc"
+#line 127 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "set transaction read only", ECPGt_EOIT, ECPGt_EORT);
-#line 129 "output.pgc"
+#line 128 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 129 "output.pgc"
+#line 128 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare mycursor3 cursor for select * from sales", ECPGt_EOIT, ECPGt_EORT);
-#line 130 "output.pgc"
+#line 129 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 130 "output.pgc"
+#line 129 "output.pgc"
 
 	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor3", ECPGt_EOIT, 
 	ECPGt_char,&(sale_rec.cust),(long)0,(long)1,(1)*sizeof(char), 
@@ -398,27 +435,48 @@ if (sqlca.sqlcode < 0) sqlprint();}
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_int,&(sale_rec.quant),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 131 "output.pgc"
+#line 130 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 131 "output.pgc"
+#line 130 "output.pgc"
 
 	while (sqlca.sqlcode == 0)
 	{
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state=='NJ')
+			if (sale_rec.state=="NJ")
 			{
 					mf_structure[index].sum_quant_3 = mf_structure[index].sum_quant_3 + sale_rec.quant;
 			}
+			index++;
 		}
-	}
-	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor3", ECPGt_EOIT, ECPGt_EORT);
-#line 143 "output.pgc"
+			{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch from mycursor3", ECPGt_EOIT, 
+	ECPGt_char,&(sale_rec.cust),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(sale_rec.prod),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mDay),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mMonth),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.mYear),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(sale_rec.state),(long)0,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_int,&(sale_rec.quant),(long)1,(long)1,sizeof(int), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
+#line 142 "output.pgc"
 
 if (sqlca.sqlcode < 0) sqlprint();}
-#line 143 "output.pgc"
+#line 142 "output.pgc"
+
+	}
+	{ ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close mycursor3", ECPGt_EOIT, ECPGt_EORT);
+#line 144 "output.pgc"
+
+if (sqlca.sqlcode < 0) sqlprint();}
+#line 144 "output.pgc"
 
 
 
@@ -430,4 +488,9 @@ if (sqlca.sqlcode < 0) sqlprint();}
 
 void output_record()
 {
+	int i =0;
+	for (; i < 10; i++) 
+	{
+		printf(" %-5s | ",mf_structure[i].prod);
+	}
 }

@@ -45,29 +45,24 @@ int main(int argc, char* argv[])
 	printf(" prod	| month	| year	| avg1	| cnt2	| max1	| sum3	| \n");
  
  
-	printf("womp4");
+
 	EXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT prod, month, year FROM sales WHERE year=1997;
-	printf("womp3");
 	EXEC SQL SET TRANSACTION read only;
-	printf("womp2");
 	EXEC SQL OPEN mycursor;
-	printf("womp1");
 	EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
-	printf("womp");
 	while (sqlca.sqlcode == 0)
 	{
-		
-		//mf_structure[index].avg_quant_1 = 0;
-		//mf_structure[index].cnt_quant_2 = 0;
-		//mf_structure[index].max_quant_1 = 0;
-		//mf_structure[index].sum_quant_3 = 0;
+		mf_structure[index].avg_quant_1 = 0;
+		mf_structure[index].cnt_quant_2 = 0;
+		mf_structure[index].max_quant_1 = 0;
+		mf_structure[index].sum_quant_3 = 0;
 		index++;
 		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
 	}
 	EXEC SQL CLOSE mycursor;
 
-	
-	output_record();
+
+output_record();
 	//A WHILE LOOP FOR VAR 1
 	count = 0;
 	sum = 0;
@@ -80,7 +75,7 @@ int main(int argc, char* argv[])
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state == 'NY' && sale_rec.mYear == 1997 && sale_rec.prod == mf_structure[index].prod)
+			if (sale_rec.state == "NY" && sale_rec.mYear == 1997 && sale_rec.prod == mf_structure[index].prod)
 			{
 					sum = sum + sale_rec.quant;
 					count++;
@@ -90,7 +85,9 @@ int main(int argc, char* argv[])
 						mf_structure[index].max_quant_1 = sale_rec.quant;
 					}
 			}
+			index++;
 		}
+			EXEC SQL FETCH FROM mycursor1 INTO :sale_rec;
 	}
 	EXEC SQL CLOSE mycursor1;
 
@@ -110,11 +107,13 @@ int main(int argc, char* argv[])
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state=='CT')
+			if (sale_rec.state=="CT")
 			{
 					mf_structure[index].cnt_quant_2++;
 			}
+			index++;
 		}
+			EXEC SQL FETCH FROM mycursor2 INTO :sale_rec;
 	}
 	EXEC SQL CLOSE mycursor2;
 
@@ -134,11 +133,13 @@ int main(int argc, char* argv[])
 		index = 0;
 		while (index <= 500)
 		{
-			if (sale_rec.state=='NJ')
+			if (sale_rec.state=="NJ")
 			{
 					mf_structure[index].sum_quant_3 = mf_structure[index].sum_quant_3 + sale_rec.quant;
 			}
+			index++;
 		}
+			EXEC SQL FETCH FROM mycursor3 INTO :sale_rec;
 	}
 	EXEC SQL CLOSE mycursor3;
 
@@ -151,4 +152,9 @@ int main(int argc, char* argv[])
 
 void output_record()
 {
+	int i =0;
+	for (; i < 10; i++) 
+	{
+		printf(" %-5s | ",mf_structure[i].prod);
+	}
 }
