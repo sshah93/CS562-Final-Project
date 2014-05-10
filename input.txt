@@ -4,12 +4,12 @@ prod,month,year
 avg_quant_1,cnt_all_2
 year=1997
 1
-state == 'NY'
+sale_rec.state == 'NY'
 1
-year == 1997
+sale_rec.year == 1997
 2
-state=='CT'
+sale_rec.state=='CT'
 3
-state=='NJ'
+sale_rec.state=='NJ'
 1
-prod == mf_structure[index].prod
+sale_rec.prod == mf_structure[index].prod

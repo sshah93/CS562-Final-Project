@@ -24,7 +24,7 @@ vector<string> select_attr;
 int numGroupingVars;
 vector<string> grouping_attr;
 vector<string> fvect;
-vector<vector<string> > phi;
+vector<string> phi;
 
 string whereClause;
 vector<string> firstSelect;
@@ -182,7 +182,6 @@ void fileParser()
 	{
 		int counter;
 		int numTemp;
-		int temp;
 		counter = 0;
 
 		string line;
@@ -192,7 +191,7 @@ void fileParser()
 		{
 			counter++;
 
-			 cout << "Counter = " << counter << endl; 
+			// cout << "Counter = " << counter << endl; 
 
 			getline(fin, line);
 
@@ -204,6 +203,11 @@ void fileParser()
 			else if(counter == 2)
 			{
 				numGroupingVars = atoi((char*)line.c_str());
+				for(int i = 0; i < numGroupingVars; i++)
+				{
+					phi.push_back("");
+				} 
+
 			}
 
 			else if(counter == 5)
@@ -213,18 +217,19 @@ void fileParser()
 
 			else
 			{
-				cout << "well";
 				numTemp = atoi((char*)line.c_str());
-				cout << numTemp;
 				getline(fin, line);
-				phi[numTemp-1].push_back(line);
+				if (phi[numTemp-1] == "")
+					phi[numTemp-1] = line;
+				else 
+					phi[numTemp-1] = phi[numTemp-1] + " && " + line;
 				//phi.push_back(line);
 			}
 		}
 	}
 
 	fin.close();
-	printInput();
+	//printInput();
 }
 
 void printInput()
@@ -249,11 +254,10 @@ void printInput()
 	}
 
 	cout << endl << "Where clause = " << whereClause << endl << endl;
-	*/
-	//for (i=0; i<5; i++)
-		//for (int k = 0; k < 5; k++)
-			cout << phi[0][0] << endl;
-		
+	
+	for (i=0; i<phi.size(); i++)
+		cout << phi[i] << endl;
+		*/
 }
 
 void makeNewVector()
@@ -342,12 +346,6 @@ int main()
 	vector<string> getColName;
 	vector<string> getDataType;
 
-	phi.resize(100);
-
-	for(int i = 0; i < 100; i++)
-	{
-		phi[i].resize(100);
-	} 
 
 	// call the function to get all the vectors ready for us
 	fileParser();
@@ -461,7 +459,11 @@ int main()
 		outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
 		outfile << "\t\tindex = 0;\n\t\t";
 		outfile << "while (index <= 500)\n\t\t{\n\t\t\t";
-		outfile << "if (mf_structure[index].";
+		outfile << "if (";
+		for (unsigned j = 0; j < mylist.size(); j++)
+			outfile << mylist[j].outputFunction(i);
+		outfile << phi[i-1] << ")\n\t\t\t{\n\t\t\t\t\t";
+		
 		outfile << "\n\n\n";
 	}
 	outfile << "\treturn 0;\n}\n\n";
