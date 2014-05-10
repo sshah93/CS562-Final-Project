@@ -3,12 +3,9 @@
 EXEC SQL BEGIN DECLARE SECTION;
 struct
 {
-	int	mMonth;
-	char	prod[21];
-	int	mYear;
-	int	min_quant_1;
-	int	cnt_quant_2;
-	int	max_quant_1;
+	char	cust[21];
+	int	sum_quant_1;
+	int	sum_quant_2;
 	int	sum_quant_3;
 } mf_structure[500]; 
 
@@ -42,22 +39,21 @@ int main(int argc, char* argv[])
 	EXEC SQL WHENEVER sqlerror sqlprint;
 
 
-	printf(" mMonth	| prod	| mYear	| min_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
+	printf(" cust	| sum_quant_1	| sum_quant_2	| sum_quant_3	| \n");
  
  
 
-	EXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT prod, month, year FROM sales WHERE year=1997;
+	EXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT cust FROM sales WHERE 1 = 1;
 	EXEC SQL SET TRANSACTION read only;
 	EXEC SQL OPEN mycursor;
-	EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
+	EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].cust;
 	while (sqlca.sqlcode == 0)
 	{
-		mf_structure[index].min_quant_1 = 0;
-		mf_structure[index].cnt_quant_2 = 0;
-		mf_structure[index].max_quant_1 = 0;
+		mf_structure[index].sum_quant_1 = 0;
+		mf_structure[index].sum_quant_2 = 0;
 		mf_structure[index].sum_quant_3 = 0;
 		index++;
-		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
+		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].cust;
 	}
 	EXEC SQL CLOSE mycursor;
 
@@ -74,20 +70,9 @@ int main(int argc, char* argv[])
 		index = 0;
 		while (index <= 500)
 		{
-			if (strcmp(mf_structure[index].prod, "Eggs") == 0 && sale_rec.mYear == 1997)
+			if (strcmp(sale_rec.state, "NY") == 0)
 			{
-					if ( mf_structure[index].min_quant_1 == 0)
-					{
-						mf_structure[index].min_quant_1= sale_rec.quant;
-					}
-					if ( sale_rec.quant < mf_structure[index].min_quant_1)
-					{
-						mf_structure[index].min_quant_1= sale_rec.quant;
-					}
-					if ( sale_rec.quant > mf_structure[index].max_quant_1)
-					{
-						mf_structure[index].max_quant_1 = sale_rec.quant;
-					}
+					mf_structure[index].sum_quant_1 = mf_structure[index].sum_quant_1 + sale_rec.quant;
 			}
 			index++;
 		}
@@ -110,9 +95,9 @@ int main(int argc, char* argv[])
 		index = 0;
 		while (index <= 500)
 		{
-			if (strcmp(mf_structure[index].prod, "Pepsi") == 0)
+			if (strcmp(sale_rec.state, "NJ") == 0)
 			{
-					mf_structure[index].cnt_quant_2++;
+					mf_structure[index].sum_quant_2 = mf_structure[index].sum_quant_2 + sale_rec.quant;
 			}
 			index++;
 		}
@@ -135,7 +120,7 @@ int main(int argc, char* argv[])
 		index = 0;
 		while (index <= 500)
 		{
-			if (strcmp(mf_structure[index].prod, "Eggs") == 0)
+			if (strcmp(sale_rec.state, "CT") == 0)
 			{
 					mf_structure[index].sum_quant_3 = mf_structure[index].sum_quant_3 + sale_rec.quant;
 			}
@@ -157,14 +142,11 @@ void output_record()
 	int i =0;
 	for (; i < 500; i++) 
 	{
-	if (mf_structure[i].mMonth != 0)
+	if (strcmp(mf_structure[i].cust, "") != 0)
 	{
-		printf(" %-5d | ",mf_structure[i].mMonth);
-		printf(" %-5s | ",mf_structure[i].prod);
-		printf(" %-5d | ",mf_structure[i].mYear);
-		printf(" %-5d | ",mf_structure[i].min_quant_1);
-		printf(" %-5d | ",mf_structure[i].cnt_quant_2);
-		printf(" %-5d | ",mf_structure[i].max_quant_1);
+		printf(" %-5s | ",mf_structure[i].cust);
+		printf(" %-5d | ",mf_structure[i].sum_quant_1);
+		printf(" %-5d | ",mf_structure[i].sum_quant_2);
 		printf(" %-5d | ",mf_structure[i].sum_quant_3);
 		printf("\n");
 	}

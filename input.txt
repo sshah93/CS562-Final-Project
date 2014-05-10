@@ -1,13 +1,11 @@
-month,prod,year,min_quant_1,cnt_quant_2
+cust,sum_quant_1,sum_quant_2,sum_quant_3
 3
-prod,month,year
-max_quant_1,sum_quant_3
-year=1997
+cust
+sum_quant_1,sum_quant_2,sum_quant_3
+1 = 1
 1
-strcmp(mf_structure[index].prod, "Eggs") == 0
-1
-sale_rec.mYear == 1997
+strcmp(sale_rec.state, "NY") == 0
 2
-strcmp(mf_structure[index].prod, "Pepsi") == 0
+strcmp(sale_rec.state, "NJ") == 0
 3
-strcmp(mf_structure[index].prod, "Eggs") == 0
+strcmp(sale_rec.state, "CT") == 0
