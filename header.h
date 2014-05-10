@@ -1,4 +1,4 @@
-/* Team Name: Team Binary
+/* Team Name: Team Binary Success
  * Team Members: Suketu Shah and JoaoPaulo Rodgriues
  *
  * File - header.h 
@@ -6,7 +6,7 @@
  * Generated Files - output.pgc & output.c
  * Descrption - This program using Embedded SQL reads in the input of Phi operator from a txt file and generates a .c file which contains the query
  				and generates a program in C which implements the evaluation of the algorithm.
- 				The algorithm is utilizes a compact data structure known as mf_structure which roughly holds the data corresponding to the MF query. 
+ 				The algorithm utilizes a compact data structure known as mf_structure which roughly holds the data corresponding to the MF query. 
  *
  * Steps to run this program : 
  *  1. Log in to PostgreSQL server (ssh [username]@postgres.cs.stevens.edu).
