@@ -93,7 +93,7 @@ public:
 				outfile << colName;
 		}
 		else 
-			outfile << fnName << num;
+			outfile << fnName << "_" << colName << "_" << num;
 		
 		if (maxlength <= 0)
 			outfile << ";" << endl;
@@ -332,6 +332,8 @@ int main()
 	int             rec_count; 
 
 	string dbname = "sales";
+	vector<string> getColName;
+	vector<string> getDataType;
 
 	// call the function to get all the vectors ready for us
 	fileParser();
@@ -362,16 +364,15 @@ int main()
 
 	rec_count = PQntuples(res);
 
-
 	for (unsigned int row=0; row<rec_count; row++) 
-	{
+	{					
 		for (unsigned int i = 0; i < mylist.size(); i++)
 		{
 			if (string(PQgetvalue(res, row, 0)) == mylist[i]->colName)
 			{
 				if (string(PQgetvalue(res, row, 1)) == "integer")
 					mylist[i]->setDataType("int");
-				else if (string(PQgetvalue(res, row, 1)) == "character varying")
+				else if (string(PQgetvalue(res, row, 1)) == "character varying" || string(PQgetvalue(res, row, 1)) == "character")
 					mylist[i]->setDataType("char");
 				else 
 					mylist[i]->setDataType(string(PQgetvalue(res, row, 1)));
@@ -381,17 +382,30 @@ int main()
 			}
 		}	
    	}
+	
+	PQclear(res);
+	
 	outfile << "#include\t<stdio.h>\n" << endl;
 	outfile << "EXEC SQL BEGIN DECLARE SECTION;" << endl;
 	outfile << "struct\n{" << endl;
 	for (unsigned int i=0; i < mylist.size(); i++)
 		mylist[i]->printMFStruct();
-	outfile << "} mf_structure[500];" << endl;
+	outfile << "} mf_structure[500]; \n\n" << endl;
+	outfile << "struct\n{\n\t";
+	outfile << "char	*cust;\n\t";
+	outfile << "char	*prod;\n\t";
+	outfile << "int    mDay;\n\t";
+	outfile << "int    mMonth;\n\t";
+	outfile << "int	 mYear;\n\t";
+	outfile << "char	*state;\n\t";
+	outfile << "int	 quant;\n";
+	outfile << "} 	sale_rec;\n";
 	outfile << "EXEC SQL END DECLARE SECTION;" << endl;
 	outfile << "EXEC SQL INCLUDE sqlca; \n \n \n \n";
 	outfile << "void	output_record(); \n\n";
 	outfile << "int main(int argc, char* argv[])\n";
 	outfile << "{ \n\n";
+	outfile << "\n\tint index = 1;" << endl;
 	outfile << "\tEXEC SQL CONNECT TO jrodrig9 USER jrodrig9 IDENTIFIED BY Johny10353976;\n";
 	outfile << "\tEXEC SQL WHENEVER sqlerror sqlprint;\n\n\n";
 	
@@ -405,13 +419,6 @@ int main()
 	outfile << "\\n\");\n \n \n" << endl;
 	
 	// FIRST SCAN
-	/*for (unsigned int i=0; i < mylist.size(); i++)
-	{
-		string temp = mylist[i]->getGroupAttr();
-		if (temp != "")
-			firstSelect.push_back(mylist[i]->getGroupAttr());
-	}*/
-	
 	outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT DISTINCT " << grouping_attr[0];
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
 		outfile << ", " << grouping_attr[i];
@@ -421,8 +428,8 @@ int main()
 	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]." << convertName(grouping_attr[0]);
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
 		outfile << ", :mf_structure[0]." << convertName(grouping_attr[i]);
-	outfile << ";\n\tint index = 1;" << endl;
-	outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
+	
+	outfile << ";\n\twhile (sqlca.sqlcode == 0)\n\t{\n";
 	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << convertName(grouping_attr[0]);
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
 		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
@@ -431,8 +438,18 @@ int main()
 	outfile << "output_record();\n";
 	
 	for (unsigned int i=1; i <= numGroupingVars; i++)
+	{
 		outfile << "\t//A WHILE LOOP FOR VAR " << i << " WILL BE INSERTED HERE\n";
-	
+		outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT * FROM sales;\n";
+		outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
+		outfile << "\tEXEC SQL OPEN mycursor;\n";
+		outfile << "\tEXEC SQL FETCH FROM mycursor INTO :sale_rec;\n";
+		outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
+		outfile << "\t\tindex = 0;\n\t\t";
+		outfile << "while (index <= 500)\n\t\t{\n\t\t\t";
+		outfile << "if (mf_structure[index].";
+		outfile << "\n\n\n";
+	}
 	outfile << "\treturn 0;\n}\n\n";
 	outfile << "void output_record()\n{\n";
 	outfile << "\tint i =0;\n";
@@ -441,7 +458,7 @@ int main()
 	
 	
 	
-	PQclear(res);
+	
 
     PQfinish(conn);
 

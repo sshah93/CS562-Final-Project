@@ -6,10 +6,23 @@ struct
 	char	prod[21];
 	int	mMonth;
 	int	mYear;
-	int	cnt1;
-	int	cnt2;
-	int	avg1;
-} mf_structure[500];
+	int	cnt_quant_1;
+	int	cnt_quant_2;
+	int	avg_quant_1;
+	int	cnt_all_2;
+} mf_structure[500]; 
+
+
+struct
+{
+	char	*cust;
+	char	*prod;
+	int    mDay;
+	int    mMonth;
+	int	 mYear;
+	char	*state;
+	int	 quant;
+} 	sale_rec;
 EXEC SQL END DECLARE SECTION;
 EXEC SQL INCLUDE sqlca; 
  
@@ -20,11 +33,13 @@ void	output_record();
 int main(int argc, char* argv[])
 { 
 
+
+	int index = 1;
 	EXEC SQL CONNECT TO jrodrig9 USER jrodrig9 IDENTIFIED BY Johny10353976;
 	EXEC SQL WHENEVER sqlerror sqlprint;
 
 
-	printf(" prod	| month	| year	| cnt1	| cnt2	| avg1	| \n");
+	printf(" prod	| month	| year	| cnt1	| cnt2	| avg1	| cnt2	| \n");
  
  
 
@@ -32,7 +47,6 @@ int main(int argc, char* argv[])
 	EXEC SQL SET TRANSACTION read only;
 	EXEC SQL OPEN mycursor;
 	EXEC SQL FETCH FROM mycursor INTO :mf_structure[0].prod, :mf_structure[0].mMonth, :mf_structure[0].mYear;
-	int index = 1;
 	while (sqlca.sqlcode == 0)
 	{
 		EXEC SQL FETCH FROM mycursor INTO :mf_structure[index].prod, :mf_structure[index].mMonth, :mf_structure[index].mYear;
@@ -43,8 +57,44 @@ int main(int argc, char* argv[])
 
 output_record();
 	//A WHILE LOOP FOR VAR 1 WILL BE INSERTED HERE
+	EXEC SQL DECLARE mycursor CURSOR FOR SELECT * FROM sales;
+	EXEC SQL SET TRANSACTION read only;
+	EXEC SQL OPEN mycursor;
+	EXEC SQL FETCH FROM mycursor INTO :sale_rec;
+	while (sqlca.sqlcode == 0)
+	{
+		index = 0;
+		while (index <= 500)
+		{
+			
+
+
 	//A WHILE LOOP FOR VAR 2 WILL BE INSERTED HERE
+	EXEC SQL DECLARE mycursor CURSOR FOR SELECT * FROM sales;
+	EXEC SQL SET TRANSACTION read only;
+	EXEC SQL OPEN mycursor;
+	EXEC SQL FETCH FROM mycursor INTO :sale_rec;
+	while (sqlca.sqlcode == 0)
+	{
+		index = 0;
+		while (index <= 500)
+		{
+			if (sale_rec.state == 'NY'  && mf_struct[index].somethingElse == sale_rec.SomethingElse)
+
+
 	//A WHILE LOOP FOR VAR 3 WILL BE INSERTED HERE
+	EXEC SQL DECLARE mycursor CURSOR FOR SELECT * FROM sales;
+	EXEC SQL SET TRANSACTION read only;
+	EXEC SQL OPEN mycursor;
+	EXEC SQL FETCH FROM mycursor INTO :sale_rec;
+	while (sqlca.sqlcode == 0)
+	{
+		index = 0;
+		while (index <= 500)
+		{
+			
+
+
 	return 0;
 }
 
@@ -54,7 +104,5 @@ void output_record()
 	for (; i < 10; i++) 
 	{
 		printf(" %-5s | ",mf_structure[i].prod);
-		printf(" %-5i | ",mf_structure[i].mMonth);
-		printf(" %-5i | \n",mf_structure[i].mYear);
 	}
 }
