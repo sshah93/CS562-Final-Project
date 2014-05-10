@@ -24,7 +24,7 @@ vector<string> select_attr;
 int numGroupingVars;
 vector<string> grouping_attr;
 vector<string> fvect;
-vector<string> phi;
+vector<vector<string>> phi(1, vector<string>());
 
 string whereClause;
 vector<string> firstSelect;
@@ -211,7 +211,13 @@ void fileParser()
 
 			else
 			{
-				phi.push_back(line);
+				int numTemp = atoi(line.c_str());
+
+				string myline = line.substr(line.find('.')+1);
+
+				phi.at(numTemp-1).push_back(myline);
+
+				//phi.push_back(line);
 			}
 		}
 	}
@@ -334,6 +340,13 @@ int main()
 	string dbname = "sales";
 	vector<string> getColName;
 	vector<string> getDataType;
+
+	phi.resize(numGroupingVars);
+
+	/* for(int i = 0; i <= numGroupingVars; i++)
+	{
+		phi[i].resize(numGroupingVars);
+	} */
 
 	// call the function to get all the vectors ready for us
 	fileParser();
