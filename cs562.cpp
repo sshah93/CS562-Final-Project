@@ -548,7 +548,7 @@ int main()
 	{
 		outfile << "\tif (mf_structure[i].";
 		mylist[0]->getName();
-		outfile << " == 0)\n\t{\n";
+		outfile << " != 0)\n\t{\n";
 	}
 		
 	for (unsigned int i = 0; i < mylist.size(); i++)

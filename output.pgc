@@ -3,8 +3,8 @@
 EXEC SQL BEGIN DECLARE SECTION;
 struct
 {
-	char	prod[21];
 	int	mMonth;
+	char	prod[21];
 	int	mYear;
 	int	min_quant_1;
 	int	cnt_quant_2;
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 	EXEC SQL WHENEVER sqlerror sqlprint;
 
 
-	printf(" prod	| mMonth	| mYear	| min_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
+	printf(" mMonth	| prod	| mYear	| min_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
  
  
 
@@ -157,10 +157,10 @@ void output_record()
 	int i =0;
 	for (; i < 500; i++) 
 	{
-	if (strcmp(mf_structure[i].prod, "") != 0)
+	if (mf_structure[i].mMonth != 0)
 	{
-		printf(" %-5s | ",mf_structure[i].prod);
 		printf(" %-5d | ",mf_structure[i].mMonth);
+		printf(" %-5s | ",mf_structure[i].prod);
 		printf(" %-5d | ",mf_structure[i].mYear);
 		printf(" %-5d | ",mf_structure[i].min_quant_1);
 		printf(" %-5d | ",mf_structure[i].cnt_quant_2);

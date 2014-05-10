@@ -36,10 +36,10 @@
 #line 13 "output.pgc"
  struct { 
 #line 6 "output.pgc"
- char prod [ 21 ] ;
+ int mMonth ;
  
 #line 7 "output.pgc"
- int mMonth ;
+ char prod [ 21 ] ;
  
 #line 8 "output.pgc"
  int mYear ;
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
 
 
 
-	printf(" prod	| mMonth	| mYear	| min_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
+	printf(" mMonth	| prod	| mYear	| min_quant_1	| cnt_quant_2	| max_quant_1	| sum_quant_3	| \n");
  
  
 
@@ -493,10 +493,10 @@ void output_record()
 	int i =0;
 	for (; i < 500; i++) 
 	{
-	if (strcmp(mf_structure[i].prod, "") != 0)
+	if (mf_structure[i].mMonth != 0)
 	{
-		printf(" %-5s | ",mf_structure[i].prod);
 		printf(" %-5d | ",mf_structure[i].mMonth);
+		printf(" %-5s | ",mf_structure[i].prod);
 		printf(" %-5d | ",mf_structure[i].mYear);
 		printf(" %-5d | ",mf_structure[i].min_quant_1);
 		printf(" %-5d | ",mf_structure[i].cnt_quant_2);
