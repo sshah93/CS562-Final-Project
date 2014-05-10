@@ -24,7 +24,7 @@ vector<string> select_attr;
 int numGroupingVars;
 vector<string> grouping_attr;
 vector<string> fvect;
-vector<vector<string>> phi(1, vector<string>(1));
+vector<vector<string> > phi;
 
 string whereClause;
 vector<string> firstSelect;
@@ -182,6 +182,7 @@ void fileParser()
 	{
 		int counter;
 		int numTemp;
+		int temp;
 		counter = 0;
 
 		string line;
@@ -191,7 +192,7 @@ void fileParser()
 		{
 			counter++;
 
-			/* cout << "Counter = " << counter << endl; */
+			 cout << "Counter = " << counter << endl; 
 
 			getline(fin, line);
 
@@ -212,27 +213,25 @@ void fileParser()
 
 			else
 			{
-				numTemp = atoi(line.c_str());
-
-				if(numTemp != 0)
-				{	
-					phi[numTemp-1].push_back(line);
-				}
-
+				cout << "well";
+				numTemp = atoi((char*)line.c_str());
+				cout << numTemp;
+				getline(fin, line);
+				phi[numTemp-1].push_back(line);
 				//phi.push_back(line);
 			}
 		}
 	}
 
 	fin.close();
-	// printInput();
+	printInput();
 }
 
 void printInput()
 {
 	int i;
 
-	for(i=0; i<select_attr.size();i++)
+	/*for(i=0; i<select_attr.size();i++)
 	{
 		cout << select_attr[i] << endl;
 	}
@@ -250,11 +249,11 @@ void printInput()
 	}
 
 	cout << endl << "Where clause = " << whereClause << endl << endl;
-
-	for (i=0; i<phi.size(); i++)
-	{
-		cout << phi[i] << endl;
-	}
+	*/
+	//for (i=0; i<5; i++)
+		//for (int k = 0; k < 5; k++)
+			cout << phi[0][0] << endl;
+		
 }
 
 void makeNewVector()
@@ -343,11 +342,11 @@ int main()
 	vector<string> getColName;
 	vector<string> getDataType;
 
-	phi.resize(numGroupingVars);
+	phi.resize(100);
 
-	for(int i = 0; i <= numGroupingVars; i++)
+	for(int i = 0; i < 100; i++)
 	{
-		phi[i].resize(numGroupingVars);
+		phi[i].resize(100);
 	} 
 
 	// call the function to get all the vectors ready for us

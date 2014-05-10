@@ -3,6 +3,13 @@ prod,month,year,cnt_quant_1,cnt_quant_2
 prod,month,year
 avg_quant_1,cnt_all_2
 year=1997
-1.state='NY'
-2.state='CT'
-3.state='NJ'
+1
+state == 'NY'
+1
+year == 1997
+2
+state=='CT'
+3
+state=='NJ'
+1
+prod == mf_structure[index].prod
