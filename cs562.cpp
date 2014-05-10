@@ -101,6 +101,53 @@ public:
 			outfile << "[" << maxlength << "];" << endl;
 	}
 	
+	void initAgVariables()
+	{
+		if (fnName == "none")
+			return;
+		else
+			outfile << "\t\tmf_structure[index]." << fnName << "_" << colName << "_" << num << " = 0;\n";
+	}
+	
+	void outputFunction(int i)
+	{
+		if (i != num || fnName == "none")
+			return;
+			
+		else
+		{
+			string temp;
+			string thisName;
+			if (fnName == "avg")
+			{
+				outfile << "\t\t\t\t\tsum = sum + " << "sale_rec." << colName << ";\n";
+				outfile << "\t\t\t\t\tcount++;\n ";
+				outfile << "\t\t\t\t\tmf_structure[index]."<< fnName << "_" << colName << "_" << num << "= sum/count;\n";
+				
+			}
+			else if (fnName == "sum")
+			{
+				outfile << "\t\t\t\t\tmf_structure[index]."<< fnName << "_" << colName << "_" << num;
+				outfile << " = mf_structure[index]." << fnName << "_" << colName << "_" << num << " + sale_rec." << colName << ";\n";
+				
+			}
+			else if (fnName == "max")
+			{
+				outfile << "\t\t\t\t\tif ( sale_rec." << colName << " > mf_structure[index]." << fnName << "_" << colName << "_" << num << ")\n\t\t\t\t\t{\n";
+				outfile << "\t\t\t\t\t\tmf_structure[index]." << fnName << "_" << colName << "_" << num << " = sale_rec." << colName << ";\n\t\t\t\t\t}\n";
+			}
+			else if (fnName == "min")
+			{
+				outfile << "\t\t\t\t\tif ( sale_rec." << colName << " < mf_structure[index]." << fnName << "_" << colName << "_" << num << ")\n\t\t\t\t\t{\n";
+				outfile << "\t\t\t\t\t\tmf_structure[index]." << fnName << "_" << colName << "_" << num << "= sale_rec." << colName << ";\n\t\t\t\t\t}\n";
+			}
+			else if (fnName == "cnt")
+			{
+				outfile << "\t\t\t\t\tmf_structure[index]."<< fnName << "_" << colName << "_" << num <<"++;\n";
+			}
+		}
+	}
+	
 	/*string getGroupAttr()
 	{
 		if (fnName == "none")
@@ -411,13 +458,15 @@ int main()
 	outfile << "int	 mYear;\n\t";
 	outfile << "char	*state;\n\t";
 	outfile << "int	 quant;\n";
-	outfile << "} 	sale_rec;\n";
+	outfile << "} 	sale_rec;\n\n";
 	outfile << "EXEC SQL END DECLARE SECTION;" << endl;
 	outfile << "EXEC SQL INCLUDE sqlca; \n \n \n \n";
 	outfile << "void	output_record(); \n\n";
 	outfile << "int main(int argc, char* argv[])\n";
 	outfile << "{ \n\n";
-	outfile << "\n\tint index = 1;" << endl;
+	outfile << "\n\tint index = 0;" << endl;
+	outfile << "\tint count = 0;" << endl;
+	outfile << "\tint sum = 0;" << endl;
 	outfile << "\tEXEC SQL CONNECT TO jrodrig9 USER jrodrig9 IDENTIFIED BY Johny10353976;\n";
 	outfile << "\tEXEC SQL WHENEVER sqlerror sqlprint;\n\n\n";
 	
@@ -437,33 +486,39 @@ int main()
 	outfile << " FROM sales WHERE " << whereClause << ";\n";
 	outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
 	outfile << "\tEXEC SQL OPEN mycursor;" << endl;
-	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[0]." << convertName(grouping_attr[0]);
+	outfile << "\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << convertName(grouping_attr[0]);
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
-		outfile << ", :mf_structure[0]." << convertName(grouping_attr[i]);
+		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
 	
 	outfile << ";\n\twhile (sqlca.sqlcode == 0)\n\t{\n";
+	for (unsigned int i=0; i < mylist.size(); i++)
+		mylist[i]->initAgVariables();
+	outfile << "\t\tindex++;\n";
 	outfile << "\t\tEXEC SQL FETCH FROM mycursor INTO :mf_structure[index]." << convertName(grouping_attr[0]);
 	for (unsigned int i=1; i < grouping_attr.size(); i++)
 		outfile << ", :mf_structure[index]." << convertName(grouping_attr[i]);
-	outfile << ";\n\t\tindex++;\n\t}\n";
+	outfile << ";\n\t}\n";
 	outfile << "\tEXEC SQL CLOSE mycursor;\n\n" << endl;
 	outfile << "output_record();\n";
 	
 	for (unsigned int i=1; i <= numGroupingVars; i++)
 	{
-		outfile << "\t//A WHILE LOOP FOR VAR " << i << " WILL BE INSERTED HERE\n";
-		outfile << "\tEXEC SQL DECLARE mycursor CURSOR FOR SELECT * FROM sales;\n";
+		outfile << "\t//A WHILE LOOP FOR VAR " << i << "\n";
+		outfile << "\tcount = 0;" << endl;
+		outfile << "\tsum = 0;" << endl;
+		outfile << "\tEXEC SQL DECLARE mycursor" << i << " CURSOR FOR SELECT * FROM sales;\n";
 		outfile << "\tEXEC SQL SET TRANSACTION read only;\n";
-		outfile << "\tEXEC SQL OPEN mycursor;\n";
-		outfile << "\tEXEC SQL FETCH FROM mycursor INTO :sale_rec;\n";
+		outfile << "\tEXEC SQL OPEN mycursor" << i << ";\n";
+		outfile << "\tEXEC SQL FETCH FROM mycursor" << i << " INTO :sale_rec;\n";
 		outfile << "\twhile (sqlca.sqlcode == 0)\n\t{\n";
 		outfile << "\t\tindex = 0;\n\t\t";
 		outfile << "while (index <= 500)\n\t\t{\n\t\t\t";
 		outfile << "if (";
+		outfile << phi[i-1] << ")\n\t\t\t{\n";
 		for (unsigned j = 0; j < mylist.size(); j++)
-			outfile << mylist[j].outputFunction(i);
-		outfile << phi[i-1] << ")\n\t\t\t{\n\t\t\t\t\t";
-		
+			mylist[j]->outputFunction(i);
+		outfile << "\t\t\t}\n\t\t}\n\t}\n";
+		outfile << "\tEXEC SQL CLOSE mycursor" << i << ";\n\n" << endl;
 		outfile << "\n\n\n";
 	}
 	outfile << "\treturn 0;\n}\n\n";

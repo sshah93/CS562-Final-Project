@@ -1,12 +1,12 @@
-prod,month,year,cnt_quant_1,cnt_quant_2
+prod,month,year,avg_quant_1,cnt_quant_2
 3
 prod,month,year
-avg_quant_1,cnt_all_2
+max_quant_1,sum_quant_3
 year=1997
 1
 sale_rec.state == 'NY'
 1
-sale_rec.year == 1997
+sale_rec.mYear == 1997
 2
 sale_rec.state=='CT'
 3
