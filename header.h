@@ -10,12 +10,13 @@
  *
  * Steps to run this program : 
  *  1. Log in to PostgreSQL server (ssh [username]@postgres.cs.stevens.edu).
- *  2. In the program (L48), modify [dbname], [username], [password] to
- *     yours ([dbname] is the same as your [username] by default).
- *  3. Preprocessor - $ ecpg -I /usr/include/postgresql esql.pgc
- *  4. Compile      - $ gcc -c -I /usr/include/postgresql/ esql.c
- *  5. Link         - $ gcc -L /usr/include/postgresql/ -lecpg -o esql esql.o
- *  6. Execute      - $ ./esql
+ *  2. The program uses our default database "jrodrig9" at my credentials which are already input in cs562.cpp
+ *	3. Run the Makefile by using the command "make"
+ *	4. run the result program by using ./test (This creates the output.pgc file which can then be prepocessed as shown below:
+ *  5. Preprocessor - $ ecpg -I /usr/include/postgresql output.pgc
+ *  6. Compile      - $ gcc -c -I /usr/include/postgresql/ output.c
+ *  7. Link         - $ gcc -L /usr/include/postgresql/ -lecpg -o output output.o
+ *  8. Execute      - $ ./output
  */
 
 #ifndef _HEADER_H_

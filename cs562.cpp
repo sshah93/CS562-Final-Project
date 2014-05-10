@@ -55,7 +55,7 @@ public:
 	int maxlength;
 
 	/* class constructor */
-	Agr(string column_name, string function_name, int num) :
+	AgrObjects(string column_name, string function_name, int num) :
 		colName(column_name),
 		fnName(function_name),
 		num(num),
@@ -65,7 +65,7 @@ public:
 	}
 
 	/* class destructor */
-	virtual ~Agr()
+	virtual ~AgrObjects()
 	{
 
 	}
